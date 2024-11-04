@@ -8,5 +8,3 @@ export const createReducer = (_reducer: any) => combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
   ..._reducer
 });
-
-// export const reducer = (state: any, action: any) => appReducer(state, action);

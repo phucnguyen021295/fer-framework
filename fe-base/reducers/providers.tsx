@@ -4,8 +4,8 @@
 import { Provider } from "react-redux";
 
 /* Instruments */
-import { reduxStore } from "./index";
+import { store } from "./index";
 
 export const ProviderRedux = (props: React.PropsWithChildren) => {
-  return <Provider store={reduxStore}>{props.children}</Provider>;
+  return <Provider store={store}>{props.children}</Provider>;
 };

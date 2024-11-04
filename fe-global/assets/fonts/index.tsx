@@ -51,4 +51,64 @@ const saira: NextFont = localFont({
     ],
   })
 
-  export {saira, tomorrow}
+  const open_sans: NextFont = localFont({
+    src: [
+        {
+            path: "./open-sans/OpenSans-Light.ttf",
+            weight: "100",
+            style: "normal",
+        },
+        {
+            path: "./open-sans/OpenSans-Regular.ttf",
+            weight: "400",
+            style: "normal",
+        },
+        {
+            path: "./open-sans/OpenSans-Semibold.ttf",
+            weight: "500",
+            style: "normal",
+        },
+        {
+            path: "./open-sans/OpenSans-Bold.ttf",
+            weight: "600",
+            style: "normal",
+        },
+        {
+            path: "./open-sans/OpenSans-ExtraBold.ttf",
+            weight: "700",
+            style: "normal",
+        },
+    ],
+});
+
+const inter: NextFont = localFont({
+  src: [
+      {
+          path: "./inter/Inter-Light.ttf",
+          weight: "100",
+          style: "normal",
+      },
+      {
+          path: "./inter/Inter-Regular.ttf",
+          weight: "400",
+          style: "normal",
+      },
+      {
+          path: "./inter/Inter-SemiBold.ttf",
+          weight: "500",
+          style: "normal",
+      },
+      {
+          path: "./inter/Inter-Bold.ttf",
+          weight: "600",
+          style: "normal",
+      },
+      {
+          path: "./inter/Inter-ExtraBold.ttf",
+          weight: "700",
+          style: "normal",
+      },
+  ],
+});
+
+  export {saira, tomorrow, inter, open_sans}
