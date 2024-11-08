@@ -28,8 +28,8 @@ const Account: React.FC = () => {
     const [profile, setProfile] = useState();
 
     useEffect(() => {
-        const profile = localStorage.getItem('profile');
-        setProfile(JSON.parse(profile))
+        // const profile = localStorage.getItem('profile');
+        // setProfile(JSON.parse(profile))
     }, [])
 
     const onClick = (event: any) => {

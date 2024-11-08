@@ -25,7 +25,7 @@ export const baseApi = createApi({
 });
 
 interface QueryParams<T> {
-  params: T; // `params` là một đối tượng tùy chọn
+  params?: T; // `params` là một đối tượng tùy chọn
 }
 
 // Hàm `getBaseApi` nhận vào `builder` và định nghĩa một endpoint `query`
@@ -35,7 +35,7 @@ export const getBaseApi = <T>(
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.query<any, QueryParams<T>>({
-    query: ({params}: QueryParams<T>) => ({
+    query: (params: T) => ({
       url,
       method: "GET",
       params,
