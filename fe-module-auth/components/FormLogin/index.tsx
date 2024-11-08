@@ -1,21 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input, Typography } from "antd";
 import { usePostLoginMutation } from "@/fe-module-auth/apis";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
+import { createStyles } from "antd-style";
 
-const {Title, Text} = Typography;
+const { Title, Text } = Typography;
 
 const FormLogin: React.FC = () => {
   const router = useRouter();
+  const { styles } = useStyles();
   const [postLogin, response] = usePostLoginMutation();
   const { isLoading, isError } = response;
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
-    postLogin({ username: values.username, password: values.password })
+    postLogin({
+      body: { username: values.username, password: values.password },
+    })
       .then((_response) => {
         const { data } = _response;
         // const redirect = searchParams.get("redirect");
@@ -29,19 +33,11 @@ const FormLogin: React.FC = () => {
   };
 
   return (
-    <Flex
-      style={{
-        width: 396,
-        background: "#fff",
-        borderRadius: 16,
-        padding: "20px 32px",
-        marginBottom: 80,
-        boxShadow: "0px 0px 15px 0px rgba(0, 0, 0, 0.25)",
-        border: "0.5px solid rgba(255, 255, 255, 1)",
-      }}
-      vertical
-    >
-      <Title level={4} style={{ textAlign: "center", marginBottom: 20, marginTop: 12 }}>
+    <Flex className={styles.container} vertical>
+      <Title
+        level={4}
+        style={{ textAlign: "center", marginBottom: 20, marginTop: 12 }}
+      >
         ĐĂNG NHẬP
       </Title>
       <Form
@@ -86,7 +82,9 @@ const FormLogin: React.FC = () => {
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Ghi nhớ mật khẩu</Checkbox>
             </Form.Item>
-            <Button type="link" style={{padding: '4px 0', color: '#000'}}>Quên mật khẩu ?</Button>
+            <Button type="link" className={styles.btnForgotPassword}>
+              Quên mật khẩu ?
+            </Button>
           </Flex>
         </Form.Item>
 
@@ -103,12 +101,33 @@ const FormLogin: React.FC = () => {
           </Button>
         </Form.Item>
 
-        <Flex justify="center" style={{paddingBottom: 12}}>
-          <Text style={{fontWeight: '500'}}>Bạn chưa có tài khoản? <Text style={{color: '#ED1C24'}}>Đăng ký</Text></Text>
+        <Flex justify="center" style={{ paddingBottom: 12 }}>
+          <Text style={{ fontWeight: "500" }}>
+            Bạn chưa có tài khoản?{" "}
+            <Text style={{ color: "#ED1C24" }}>Đăng ký</Text>
+          </Text>
         </Flex>
       </Form>
     </Flex>
   );
 };
 
-export default FormLogin;
+export default memo(FormLogin);
+
+const useStyles = createStyles(({ token, css }) => ({
+  // Also supports obtaining the same writing experience as normal css through css string templates
+  container: css`
+    width: 396px;
+    background: ${token.colorBgContainer};
+    border-radius: 16px;
+    padding: 20px 32px;
+    margin-bottom: 80px;
+    box-shadow: "0px 0px 15px 0px rgba(0, 0, 0, 0.25)";
+    border: "0.5px solid rgba(255, 255, 255, 1)";
+  `,
+
+  btnForgotPassword: css`
+    padding: "4px 0";
+    color: ${token.colorText};
+  `,
+}));
