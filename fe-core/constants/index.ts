@@ -29,7 +29,13 @@ export interface HeaderProps {
   showMenu?: boolean;
 }
 
-export type MenuItem = Required<MenuProps>["items"][number];
+export interface MenuItem {
+  key: string;
+  label: React.ReactNode;
+  icon?: React.ReactNode;
+  link?: string;
+  children?: MenuItem[];
+};
 
 export const GLOBAL_HEADER_MENU_ID = "__GLOBAL_HEADER_MENU__";
 
