@@ -19,6 +19,9 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
     },
   },
+  selectors: {
+    getToken: (state) => state.token
+  }
 });
 
 export const authActions = authSlice.actions;
