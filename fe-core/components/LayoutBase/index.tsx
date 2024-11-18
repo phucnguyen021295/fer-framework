@@ -30,10 +30,10 @@ import { useTheme } from "@/fe-global/themes/ThemeProvider";
 const { Header, Sider, Content, Footer } = Layout;
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactNode; 
   layoutMode: ThemeLayoutMode; // Loai hiển thị layout
   headerHeight: number; // Chiều cao header
-  widthSider: number;
+  widthSider: number; 
   collapsedSider: boolean;
   showFooter: boolean; // Trạng thái ẩn hiện footer
   FooterComponent?: React.ReactNode;
@@ -136,15 +136,6 @@ export default function LayoutBase(props: Props) {
     </Layout>
   );
 }
-
-const headerStyle: React.CSSProperties = {
-  height: 60,
-  padding: 0,
-  lineHeight: "60px",
-  boxShadow:
-    "0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02)",
-  backdropFilter: "blur(8px)",
-};
 
 const contentStyle: React.CSSProperties = {
   minHeight: 120,

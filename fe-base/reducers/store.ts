@@ -12,23 +12,12 @@ import {
   type TypedUseSelectorHook,
 } from "react-redux";
 
-/* Instruments */
-// import { reducer } from "./rootReducer";
-// import { middleware } from "./middleware";
-
 export const store = (reducer: Reducer, middleware: Middleware) => configureStore({
   reducer,
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(middleware);
   },
 });
-
-// export const reduxStore = (reducer, middleware) => configureStore({
-//   reducer,
-//   middleware: (getDefaultMiddleware) => {
-//     return getDefaultMiddleware().concat(middleware);
-//   },
-// });
 
 export const useDispatch = () => useReduxDispatch<ReduxDispatch>();
 export const useSelector: TypedUseSelectorHook<ReduxState> = useReduxSelector;

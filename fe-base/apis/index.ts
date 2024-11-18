@@ -5,15 +5,16 @@ import {
   EndpointBuilder,
   BaseQueryFn,
 } from "@reduxjs/toolkit/query/react";
-import { getCookie } from "cookies-next";
+import { getToken } from "@/fe-base/utils/getToken";
 
 // initialize an empty api service that we'll inject endpoints into later as needed
 export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.URL_SERVER, // 'https://smartindustrial.rox.vn',
+    baseUrl: process.env.URL_SERVER,
     prepareHeaders: (headers, { getState, endpoint }) => {
       headers.set("Content-Type", "application/json");
-      const token = getCookie("token");
+      const state = getState();
+      const token = getToken(state);
       if (!!token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -21,7 +22,7 @@ export const baseApi = createApi({
     },
   }),
   endpoints: () => ({}),
-  tagTypes: JSON.parse(process.env.TAG_TYPES || '[]')
+  tagTypes: JSON.parse(process.env.TAG_TYPES || "[]"),
 });
 
 interface QueryParams<T> {
@@ -35,7 +36,7 @@ export const getBaseApi = <T>(
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.query<any, QueryParams<T>>({
-    query: ({params}: QueryParams<T>) => ({
+    query: ({ params }: QueryParams<T>) => ({
       url,
       method: "GET",
       params,
