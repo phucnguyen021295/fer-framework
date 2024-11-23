@@ -47,7 +47,7 @@ const initialState: appState = {
     showSider: true,
     inverted: false,
     collapsedSider: false,
-    collapsedWidth: 64,
+    collapsedWidth: 80,
     width: 270,
   },
   memu: {
@@ -106,6 +106,8 @@ export const appSlice = createSlice({
     getHeightLogo: (state) => state.header.heightLogo,
 
     getCollapsedSider: (state) => state.sider.collapsedSider,
+
+    getSider: (state) => state.sider,
 
     getShowSider: (state) => state.sider.showSider,
 
