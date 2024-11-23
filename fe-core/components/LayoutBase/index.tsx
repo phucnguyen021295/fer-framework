@@ -1,5 +1,5 @@
 "use client";
-configResponsive({ sm: 640 });
+configResponsive({ sm: 640, md: 800 });
 
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
