@@ -122,8 +122,14 @@ const useStyles = createStyles(({ token, css }) => ({
     border-radius: 16px;
     padding: 20px 32px;
     margin-bottom: 80px;
-    box-shadow: "0px 0px 15px 0px rgba(0, 0, 0, 0.25)";
-    border: "0.5px solid rgba(255, 255, 255, 1)";
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.25);
+    border: 0.5px solid rgba(255, 255, 255, 1);
+
+    /* For even smaller screens */
+    @media (max-width: 480px) {
+      padding: 20px;
+      width: 350px;
+    }
   `,
 
   btnForgotPassword: css`
