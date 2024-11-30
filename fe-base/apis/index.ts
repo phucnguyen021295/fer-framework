@@ -18,6 +18,7 @@ export const baseApi = createApi({
       if (!!token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
+      headers.set("organizationCode", `ROX`);
       return headers;
     },
   }),
@@ -25,39 +26,39 @@ export const baseApi = createApi({
   tagTypes: JSON.parse(process.env.TAG_TYPES || "[]"),
 });
 
-interface QueryParams<T> {
-  params?: T; // `params` là một đối tượng tùy chọn
+interface QueryParams<TParams = Record<string, any>> {
+  params?: TParams; // `params` là một đối tượng tùy chọn
 }
 
 // Hàm `getBaseApi` nhận vào `builder` và định nghĩa một endpoint `query`
-export const getBaseApi = <T>(
+export const getBaseApi = <TParams extends Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
-  builder.query<any, QueryParams<T>>({
-    query: (params: QueryParams<T>) => ({
+  builder.query<any, QueryParams<TParams>>({
+    query: (params: QueryParams<TParams>) => ({
       url,
       method: "GET",
-      params,
+      ...(params ? { params } : {}),
     }),
     transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
   });
 
-interface MutationParams<T> {
-  body: T;
-  params?: Record<string, any>; // `params` là một đối tượng tùy chọn
-}
+  interface MutationParams<TBody, TParams = Record<string, any>> {
+    body: TBody;
+    params?: TParams;
+  }
 
 // Hàm `postBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
-export const postBaseApi = <T>(
+export const postBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.mutation>>
 ) =>
-  builder.mutation<any, MutationParams<T>>({
-    query: ({ body, params }: MutationParams<T>) => ({
+  builder.mutation<TBody, MutationParams<TBody, TParams>>({
+    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
       url,
       method: "POST",
       body,
@@ -68,15 +69,15 @@ export const postBaseApi = <T>(
   });
 
 // Hàm `putBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
-export const putBaseApi = <T>(
+export const putBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
-  builder.mutation<any, MutationParams<T>>({
-    query: ({ body, params }: MutationParams<T>) => ({
+  builder.mutation<any, MutationParams<TBody, TParams>>({
+    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
       url,
-      method: "POST",
+      method: "PUT",
       body,
       params,
     }),
@@ -85,13 +86,13 @@ export const putBaseApi = <T>(
   });
 
 // Hàm `patchBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
-export const patchBaseApi = <T>(
+export const patchBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
-  builder.mutation<any, MutationParams<T>>({
-    query: ({ body, params }: MutationParams<T>) => ({
+  builder.mutation<any, MutationParams<TBody, TParams>>({
+    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
       url,
       method: "PATCH",
       body,
@@ -127,9 +128,9 @@ export const createEndpoints = (
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.query>>
 ) => ({
-  get: getBaseApi(url, builder, partial),
-  post: postBaseApi(url, builder, partial),
-  put: putBaseApi(url, builder, partial),
-  patch: patchBaseApi(url, builder, partial),
-  delete: deleteBaseApi(url, builder, partial),
+  [`get${slide}`]: getBaseApi(url, builder, partial),
+  [`post${slide}`]: postBaseApi(url, builder, partial),
+  [`put${slide}`]: putBaseApi(url, builder, partial),
+  [`patch${slide}`]: patchBaseApi(url, builder, partial),
+  [`delete${slide}`]: deleteBaseApi(url, builder, partial),
 });
