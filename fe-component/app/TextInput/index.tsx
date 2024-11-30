@@ -1,24 +1,36 @@
-import React from 'react';
-import {TextInput, TextInputProps, StyleSheet, View} from 'react-native';
+import React from "react";
+import { TextInput, TextInputProps, StyleSheet, View } from "react-native";
+import { SIZE, sizeProps, VARIANT, variantProps } from "../theme";
 
-interface Props extends TextInputProps {
+export interface Props extends TextInputProps {
   containerStyle?: {};
-  name?: string;
-  left?: React.ReactNode;
-  right?: React.ReactNode;
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
+  size?: sizeProps;
+  variant?: variantProps;
+  multiline?: boolean
 }
 
 const TextInputBase = (props: Props) => {
-  const {left, right, containerStyle = {}, style = {}, ...otherProps} = props;
+  const {
+    prefix,
+    suffix,
+    variant = "outlined",
+    size = "medium",
+    containerStyle = {},
+    style = {},
+    ...otherProps
+  } = props;
+
   return (
-    <View style={[styles.container, containerStyle]}>
-      {left && left}
+    <View style={[SIZE[size], VARIANT[variant], styles.container, containerStyle]}>
+      {prefix && prefix}
       <TextInput
         style={[styles.textInput, style]}
-        placeholderTextColor={'#868686'}
+        placeholderTextColor={"#a8a8a8"}
         {...otherProps}
       />
-      {right && right}
+      {suffix && suffix}
     </View>
   );
 };
@@ -27,19 +39,17 @@ export default TextInputBase;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 4,
     paddingLeft: 16,
     paddingRight: 8,
-    backgroundColor: '#E3ECFF',
-    width: '100%',
-    height: 44,
+    width: "100%",
   },
   textInput: {
     flex: 1,
     fontSize: 16,
-    height: '100%',
-    fontFamily: 'SVN-Gilroy'
+    height: "100%",
+    fontFamily: "SVN-Gilroy",
   },
 });
