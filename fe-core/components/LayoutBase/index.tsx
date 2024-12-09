@@ -1,9 +1,9 @@
 "use client";
-configResponsive({ sm: 640, md: 992 });
+configResponsive({ xs: 0, sm: 576, md: 768, lg: 992, xl: 1200, xxl: 1600 });
 
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Layout, theme } from "antd";
+import { Drawer, Layout, theme } from "antd";
 import { configResponsive, useResponsive } from "ahooks";
 
 import GlobalHeader from "../GlobalHeader";
@@ -30,10 +30,10 @@ import { useTheme } from "@/fe-global/themes/ThemeProvider";
 const { Header, Sider, Content, Footer } = Layout;
 
 interface Props {
-  children: React.ReactNode; 
+  children: React.ReactNode;
   layoutMode: ThemeLayoutMode; // Loai hiển thị layout
   headerHeight: number; // Chiều cao header
-  widthSider: number; 
+  widthSider: number;
   collapsedSider: boolean;
   showFooter: boolean; // Trạng thái ẩn hiện footer
   FooterComponent?: React.ReactNode;
@@ -54,20 +54,24 @@ export default function LayoutBase(props: Props) {
   const {
     token: { headerBg },
   } = theme.useToken();
-  const responsive = useResponsive() || { sm: true };
-  const isMobile = !responsive?.sm;
+  const {md, lg, xl} = useResponsive();
+  const isMobile = !md;
 
   useLayoutEffect(() => {
     dispatch(setIsMobile(isMobile));
     if (isMobile) {
       dispatch(setLayoutMode(LAYOUT_MODE_VERTICAL));
       dispatch(setCollapsedSider(true));
+      return;
     }
-  }, [isMobile, dispatch]);
+    if(!lg || (lg && !xl)) {
+      dispatch(setCollapsedSider(true));
+    }
+  }, [isMobile, lg, xl, dispatch]);
 
   useEffect(() => {
-    dispatch(setTheme(mode))
-  }, [mode])
+    dispatch(setTheme(mode));
+  }, [mode]);
 
   const toggleCollapsed = () => {
     dispatch(setCollapsedSider(!collapsedSider));
@@ -104,6 +108,25 @@ export default function LayoutBase(props: Props) {
 
   const SiderLayout = useMemo(() => {
     if (!showSider) return null;
+
+    // if (isMobile) {
+    //   return (
+    //     <Drawer
+    //       title="Drawer with extra actions"
+    //       placement={'left'}
+    //       width={400}
+    //       // onClose={onClose}
+    //       open={!collapsedSider}
+    //     >
+    //       <GlobalSider
+    //         siderCollapse={collapsedSider}
+    //         headerHeight={headerHeight}
+    //         mode={layoutMode}
+    //       />
+    //     </Drawer>
+    //   );
+    // }
+
     return (
       <Sider
         theme={mode}
