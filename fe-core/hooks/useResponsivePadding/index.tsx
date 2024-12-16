@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useResponsive } from "ahooks";
 import { useTheme } from "antd-style";
-import { el } from "date-fns/locale";
 
 const useResponsivePadding = () => {
   const token = useTheme();
@@ -26,7 +25,6 @@ const useResponsivePadding = () => {
       setPadding(token.paddingLG);
     }
 
-    console.log("xs, sm, md, lg, xl", xs, sm, md, lg, xl, xxl);
   }, [xs, sm, md, lg, xl]);
 
   return padding;
