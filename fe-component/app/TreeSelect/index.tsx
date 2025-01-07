@@ -1,78 +1,66 @@
 import React, {memo, useCallback, useMemo, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Sử dụng thư viện icon
 import BottomSheet from '../BottomSheet';
 import {SIZE, sizeProps} from '../theme';
 import {Divider, useTheme} from 'react-native-paper';
-import {BottomSheetFlashList} from '@gorhom/bottom-sheet';
 import TextInput from '../TextInput';
-import {useNavigation} from '@react-navigation/native';
+import Tree from '../Tree';
+
+function findTitleById(nodes, targetId) {
+    for (let node of nodes) {
+      // Check if the current node has the matching ID
+      if (node.value === targetId) {
+        return node.label; // Return the title if a match is found
+      }
+      // Recursively search the children if they exist
+      if (node.children && node.children.length > 0) {
+        const label = findTitleById(node.children, targetId);
+        if (label) return label; // Return title if found in children
+      }
+    }
+    return null; // Return null if no matching ID is found
+  }
 
 interface Props {
   value?: string;
   size?: sizeProps;
   right?: React.ReactNode;
-  data: {label: string; value: string}[];
+  data: {label: string; value: string, children?: []}[];
   placeholder?: string;
   itemComponent?: ({item}: {item: any}) => React.ReactNode;
   onChange: (value: string) => void;
-  disabled?: boolean;
-  containerStyle: any;
   screen?: string;
+  disabled?: boolean;
+  children?: React.ReactNode;
+  defaultExpand?: boolean;
 }
 
-const Select = (props: Props) => {
+const TreeSelect = (props: Props) => {
   const theme = useTheme();
-  const navigation = useNavigation();
   const {
     value,
     data = [],
     size = 'medium',
     right,
     placeholder = '',
-    itemComponent,
     onChange,
-    disabled = false,
     containerStyle = {},
-    screen = '',
+    disabled = false,
+    defaultExpand = false,
   } = props;
   const [isVisible, setVisible] = useState(false);
 
-  const label = useMemo(() => {
-    const _item = data.filter(item => item.value === value);
-    if (_item.length > 0) {
-      return _item[0].label;
-    }
-    return '';
-  }, [value, data]);
+  const label = useMemo(() => findTitleById(data, value), [value, data]);
 
-  const onChangeSelect = (value: string) => {
-    onChange(value);
+  const onChangeSelect = (node: any) => {
+    onChange(node.value);
     setVisible(false);
   };
 
   const onSelect = () => {
-    if (screen) {
-      navigation.navigate(screen, {onChangeSelect: value => onChange(value)});
-      return;
-    }
     setVisible(!isVisible);
   };
-
-  const renderItem = useCallback(({item}) => {
-    return (
-      <>
-        <TouchableOpacity
-          key={item.value}
-          style={styles.itemContainer}
-          onPress={() => onChangeSelect(item.value)}
-          activeOpacity={0.8}>
-          {itemComponent ? itemComponent({item}) : <Text>{item.label}</Text>}
-        </TouchableOpacity>
-        <Divider />
-      </>
-    );
-  }, []);
 
   return (
     <>
@@ -84,7 +72,8 @@ const Select = (props: Props) => {
           disabled && styles.disabled,
           containerStyle,
         ]}
-        onPress={onSelect}>
+        onPress={onSelect}
+        disabled={disabled}>
         <Text style={label ? styles.text : styles.placeholder}>
           {label ? label : placeholder}
         </Text>
@@ -102,25 +91,20 @@ const Select = (props: Props) => {
       <BottomSheet
         title={placeholder}
         isVisible={isVisible}
-        index={1}
+        index={2}
         points={['25%', '50%', '90%']}>
-        <View style={{marginHorizontal: 20, paddingTop: 8}}>
+        {/* <View style={{marginHorizontal: 20, paddingTop: 8}}>
           <TextInput placeholder={'Tìm kiếm'} />
+        </View> */}
+        <View style={{flex: 1, paddingHorizontal: 20}}>
+        <Tree data={data} onSelect={onChangeSelect} defaultExpand={defaultExpand} />
         </View>
-
-        <BottomSheetFlashList
-          data={data}
-          keyExtractor={item => item.value}
-          renderItem={renderItem}
-          estimatedItemSize={43.3}
-          contentContainerStyle={{paddingHorizontal: 20}}
-        />
       </BottomSheet>
     </>
   );
 };
 
-export default memo(Select);
+export default memo(TreeSelect);
 
 const styles = StyleSheet.create({
   container: {
@@ -131,7 +115,7 @@ const styles = StyleSheet.create({
     borderColor: '#D9D9D9', // Màu viền
     paddingRight: 0, // Khoảng cách padding ngang
     backgroundColor: '#FFFFFF', // Màu nền trắng
-    borderRadius: 4,
+    borderRadius: 8,
   },
   text: {
     fontSize: 16, // Kích thước chữ
@@ -144,11 +128,11 @@ const styles = StyleSheet.create({
   },
 
   itemContainer: {
-    paddingVertical: 12,
+    paddingVertical: 16,
     // backgroundColor: "#eee",
   },
 
   disabled: {
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#efeded',
   },
 });
