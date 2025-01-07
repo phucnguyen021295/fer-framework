@@ -1,12 +1,16 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { MenuProps } from "antd";
-import { Dropdown, Flex } from "antd";
+import { Dropdown, Flex, Typography } from "antd";
 import Image from "next/image";
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { DownOutlined } from '@ant-design/icons';
+import { useSelector } from "react-redux";
+import { authSelectors } from "@/fer-framework/fe-module-auth/reducers";
+import { useResponsive } from "ahooks";
 
+const {Text} = Typography;
 
 const items: MenuProps["items"] = [
     // {
@@ -25,25 +29,20 @@ const items: MenuProps["items"] = [
 
 const Account: React.FC = () => {
     const router = useRouter();
-    const [profile, setProfile] = useState();
-
-    useEffect(() => {
-        // const profile = localStorage.getItem('profile');
-        // setProfile(JSON.parse(profile))
-    }, [])
+    const me = useSelector(authSelectors.getMe);
+    const {sm} = useResponsive();
 
     const onClick = (event: any) => {
         console.log('onChange', event)
         if(event.key === '3') {
             deleteCookie('token');
             router.refresh()
-            
         }
     }
 
     return (
         <Dropdown menu={{ items, onClick }} placement="bottomRight">
-            <Flex align="center" style={{ height: "100%" }}>
+            <Flex align="center" gap={8} style={{ height: "100%" }}>
                 <Image
                     src={require("./images/avatar.jpg")}
                     width={32}
@@ -51,8 +50,8 @@ const Account: React.FC = () => {
                     alt="avatar"
                     style={{borderRadius: 24}}
                 />
-                <span className="alp-header-fullName">{profile?.FullName}</span>
-                <DownOutlined style={{paddingLeft: 12}} />
+                {sm && <Text>{me?.fullName}</Text>}
+                <DownOutlined />
             </Flex>
         </Dropdown>
     )

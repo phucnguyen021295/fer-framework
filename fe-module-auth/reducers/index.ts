@@ -1,14 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { authApi } from "../apis";
 
 // Define a type for the slice state
 interface authState {
   token: string;
+  me: any;
 }
 
 // Define the initial state using that type
 const initialState: authState = {
   token: "",
+  me: null,
 };
 
 export const authSlice = createSlice({
@@ -19,8 +22,18 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
     },
   },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      authApi.endpoints.getMeAuth.matchFulfilled,
+      (state, action: any) => {
+        state.me = action.payload;
+      }
+    );
+  },
   selectors: {
-    getToken: (state) => state.token
+    getToken: (state) => state.token,
+
+    getMe: (state) => state.me,
   }
 });
 
