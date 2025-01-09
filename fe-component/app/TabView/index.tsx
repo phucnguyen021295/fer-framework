@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   focusTab: {
-    backgroundColor: '#E3ECFF',
+    backgroundColor: 'rgb(198, 231, 255)',
     borderRadius: 25,
   },
   indicator: {
@@ -130,6 +130,6 @@ const styles = StyleSheet.create({
     fontFamily: 'SVN-Gilroy',
   },
   focusedLabel: {
-    color: '#246BFD',
+    color: '#00AEEF',
   },
 });

@@ -5,7 +5,7 @@ import {
   EndpointBuilder,
   BaseQueryFn,
 } from "@reduxjs/toolkit/query/react";
-import { getToken } from "@/fe-base/utils/getToken";
+import { getToken, getOrganizationCode } from "@/fe-base/utils/getToken";
 
 // initialize an empty api service that we'll inject endpoints into later as needed
 export const baseApi = createApi({
@@ -15,10 +15,13 @@ export const baseApi = createApi({
       headers.set("Content-Type", "application/json");
       const state = getState();
       const token = getToken(state);
+      const organizationCode = getOrganizationCode(state);
       if (!!token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
-      headers.set("organizationCode", `ROX`);
+      if(!!organizationCode) {
+        headers.set("organizationCode", organizationCode);
+      }
       return headers;
     },
   }),

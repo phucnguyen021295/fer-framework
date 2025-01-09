@@ -32,10 +32,10 @@ const variant = StyleSheet.create({
     borderWidth: 1,
   },
   filled: {
-    backgroundColor: '#E3ECFF'
+    backgroundColor: '#E3ECFF',
   },
   borderless: {
-    borderWidth: 0
+    borderWidth: 0,
   },
 });
 

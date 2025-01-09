@@ -1,13 +1,15 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import React, {memo, useCallback, useEffect, useMemo, useRef} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProps,
   BottomSheetView,
-} from "@gorhom/bottom-sheet";
-import { Divider } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+} from '@gorhom/bottom-sheet';
+import {Divider} from 'react-native-paper';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Text from '../Text';
 
 interface Props extends BottomSheetModalProps {
   isVisible: boolean;
@@ -23,7 +25,7 @@ const BottomSheet = (props: Props) => {
     isVisible,
     title,
     children,
-    points = ["50%"],
+    points = ['50%'],
     onClose,
     ...otherProps
   } = props;
@@ -60,16 +62,24 @@ const BottomSheet = (props: Props) => {
       snapPoints={snapPoints}
       containerStyle={styles.containerStyle}
       onDismiss={onDismiss}
-      backdropComponent={(backdropProps) => (
+      backdropComponent={backdropProps => (
         <BottomSheetBackdrop {...backdropProps} disappearsOnIndex={-1} />
       )}
-      {...otherProps}
-    >
+      {...otherProps}>
       <BottomSheetView style={styles.contentContainer}>
         {title && (
           <>
-            <Text style={styles.title}>{title}</Text>
+            <Text size="Medium" mode="SemiBold" style={styles.title}>
+              {title}
+            </Text>
             <Divider horizontalInset />
+            <AntDesign
+              name="close"
+              size={22}
+              color="black"
+              style={styles.close}
+              onPress={onDismiss}
+            />
           </>
         )}
         {children}
@@ -81,20 +91,24 @@ const BottomSheet = (props: Props) => {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    backgroundColor: "#00000080",
+    backgroundColor: '#00000080',
     zIndex: 99,
   },
   contentContainer: {
     flex: 1,
   },
   title: {
-    textAlign: "center",
+    textAlign: 'center',
     paddingTop: 4,
-    paddingBottom: 12,
-    fontSize: 16,
-    fontWeight: "500",
-    textTransform: "uppercase",
-    fontFamily: "SVN-Gilroy",
+    paddingBottom: 8,
+    textTransform: 'uppercase',
+  },
+
+  close: {
+    position: 'absolute',
+    right: 12,
+    top: 0,
+    padding: 4,
   },
 });
 

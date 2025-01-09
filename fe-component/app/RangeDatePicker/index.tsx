@@ -2,34 +2,41 @@ import DateTimePickerUI from 'react-native-ui-datepicker';
 import {memo, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import BottomSheet from '../BottomSheet';
-import {SIZE, sizeProps} from '../theme';
 import {Text, useTheme} from 'react-native-paper';
 import moment, {Moment} from 'moment';
+
+import BottomSheet from '../BottomSheet';
+import {SIZE, sizeProps} from '../theme';
 import Button from '../Button';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface Props {
   value: [Moment, Moment];
   size?: sizeProps;
   placeholder?: string;
   onChange: (value: Moment) => void;
-  defaultValue?: Moment;
+  defaultValue?: [Moment, Moment];
   disabled?: boolean;
   containerStyle: any;
+  allowClear?: boolean;
+  onClearValue: () => void;
 }
 
 function RangeDatePicker(props: Props) {
   const {
+    defaultValue = [moment(), moment()],
     value = [],
     size = 'medium',
     placeholder = '',
     onChange,
     disabled = false,
     containerStyle = {},
+    allowClear = false,
+    onClearValue
   } = props;
   const theme = useTheme();
   const [isVisible, setVisible] = useState(false);
-  const [date, setDate] = useState([moment(), moment()]);
+  const [date, setDate] = useState(value.length > 1 ? value : defaultValue);
 
   const onChangeSelect = (date: string) => {
     setDate([date.startDate, date.endDate]);
@@ -37,6 +44,11 @@ function RangeDatePicker(props: Props) {
       setVisible(false);
       onChange([date.startDate, date.endDate]);
     }
+  };
+
+  const onClear = () => {
+    setDate(defaultValue);
+    onClearValue();
   };
 
   return (
@@ -53,17 +65,27 @@ function RangeDatePicker(props: Props) {
         disabled={disabled}>
         <Text style={value.length === 2 ? styles.text : styles.placeholder}>
           {value.length === 2
-            ? `${value[0].format('DD/MM/YYYY')} - ${value[1].format(
-                'DD/MM/YYYY',
+            ? `${value[0].format('DD/MM/YYYY HH:mm')} - ${value[1].format(
+                'DD/MM/YYYY HH:mm',
               )}`
             : placeholder}
         </Text>
-        <Fontisto
-          name="date"
-          size={24}
-          style={{paddingRight: 8}}
-          color={theme.colors.primary}
-        />
+        {allowClear && value.length === 2 ? (
+          <AntDesign
+            name="closecircleo"
+            size={20}
+            color="#898989"
+            style={{paddingRight: 8}}
+            onPress={onClear}
+          />
+        ) : (
+          <Fontisto
+            name="date"
+            size={24}
+            style={{paddingRight: 8}}
+            color={theme.colors.primary}
+          />
+        )}
       </TouchableOpacity>
       <BottomSheet
         // title={placeholder}

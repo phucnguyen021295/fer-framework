@@ -7,15 +7,16 @@ interface Props {
   name: string;
   error?: string;
   children: ReactNode;
+  require?: boolean;
 }
 
 const FormItem = (props: Props) => {
-  const { children, label, name, error } = props;
+  const { children, label, name, error, require } = props;
   return (
     <View style={styles.container}>
       {label ? (
         <Text variant="labelLarge" style={styles.label}>
-          {label}
+          {label} {require && <Text style={{color: 'red'}}>*</Text>}
         </Text>
       ) : null}
       {children}
@@ -31,11 +32,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     paddingBottom: 8,
-    lineHeight: 16 * 1.5,
-    fontWeight: 500,
-    color: '#2E2E2E'
+    lineHeight: 22,
+    fontWeight: 400,
+    color: '#414651'
   },
 
   textError: {

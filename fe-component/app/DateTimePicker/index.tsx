@@ -63,7 +63,7 @@ function DateTimePicker(props: Props) {
         // title={placeholder}
         isVisible={isVisible}
         index={2}
-        points={['25%', '55%']}>
+        points={['25%', '56%']}>
         <View style={styles.dateContainer}>
           <DateTimePickerUI
             mode="single"
