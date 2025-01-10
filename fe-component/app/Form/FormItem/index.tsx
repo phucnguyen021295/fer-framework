@@ -1,6 +1,6 @@
+import Text from "@/fe-component/Text";
 import React, { memo, ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
-import { Text } from "react-native-paper";
 
 interface Props {
   label?: string;
@@ -15,7 +15,7 @@ const FormItem = (props: Props) => {
   return (
     <View style={styles.container}>
       {label ? (
-        <Text variant="labelLarge" style={styles.label}>
+        <Text style={styles.label}>
           {label} {require && <Text style={{color: 'red'}}>*</Text>}
         </Text>
       ) : null}
@@ -29,13 +29,10 @@ export default memo(FormItem);
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 14,
-    paddingBottom: 8,
-    lineHeight: 22,
-    fontWeight: 400,
+    paddingBottom: 6,
     color: '#414651'
   },
 

@@ -100,7 +100,7 @@ function PersonalInformation(props) {
               </View>
               <View style={styles.content}>
                 <Text type="Secondary">Ngày sinh</Text>
-                <Text>{moment(user?.date).format('DD/MM/YYYY')}</Text>
+                <Text>{moment(user?.birthday).format('DD/MM/YYYY')}</Text>
               </View>
             </View>
           </View>

@@ -1,10 +1,11 @@
 import React, {memo} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 
 // Components
 import Loading from './Loading';
 import Empty from '../Empty';
+import Button from '../Button';
 
 interface HeaderProps {
   isLoading: boolean;
@@ -32,13 +33,7 @@ const ListHeaderComponent = (props: HeaderProps) => {
     return (
       <View style={styles.wrapper}>
         <Text>Đã có lỗi xảy ra. Vui lòng thử lại sau</Text>
-        <Button
-          style={{paddingTop: 4}}
-          labelStyle={styles.labelStyle}
-          mode="text"
-          onPress={() => refetch()}>
-          Thử lại
-        </Button>
+        <Button size="small" type="ghost" onPress={() => refetch()}>Thử lại</Button>
       </View>
     );
   }
@@ -54,6 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 20,
+    gap: 12,
   },
 
   labelStyle: {

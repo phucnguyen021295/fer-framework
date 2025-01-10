@@ -5,8 +5,8 @@ import {useTheme} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   small: {
-    height: 40,
-    paddingHorizontal: 10,
+    height: 36,
+    paddingHorizontal: 12,
   },
   medium: {
     height: 44,

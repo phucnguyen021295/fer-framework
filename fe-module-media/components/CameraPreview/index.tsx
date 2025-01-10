@@ -74,10 +74,10 @@ const CameraPreview = ({photo, retakePicture, savePhoto}: any) => {
               marginBottom: bottom,
               justifyContent: 'space-between',
             }}>
-              <Button onPress={onSavePressed}>Lưu lại</Button>
+              <Button onPress={onSavePressed} type="ghost">Lưu lại</Button>
             <Button mode="contained-tonal" onPress={retakePicture}>Bỏ qua</Button>
 
-            <Button onPress={() => savePhoto([photo])}>Tải lên</Button>
+            <Button type="primary" onPress={() => savePhoto([photo])}>Tải lên</Button>
           </View>
         </View>
       </ImageBackground>

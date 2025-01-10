@@ -1,4 +1,4 @@
-import React, {memo, forwardRef, useImperativeHandle, useRef} from 'react';
+import React, {memo, forwardRef, useImperativeHandle, useRef, useEffect} from 'react';
 import {
   Animated,
   StyleSheet,
@@ -12,6 +12,7 @@ import {
   SceneRendererProps,
   SceneMap,
 } from 'react-native-tab-view';
+import Text from '../Text';
 
 interface Props {
   tabIndex?: number;
@@ -37,6 +38,14 @@ function TabViewBase(props: Props, ref) {
     [],
   );
 
+  useEffect(() => {
+    Animated.timing(position.current, {
+      toValue: index,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [])
+
   const _handleIndexChange = index => {
     Animated.timing(position.current, {
       toValue: index,
@@ -59,8 +68,8 @@ function TabViewBase(props: Props, ref) {
           style={[
             styles.indicator,
             {
-              left: index === 0 ? 4 : 0,
-              width: width / 5 - 48,
+              left: index === 0 ? 8 : 0,
+              width: (width - 48) / 2,
               transform: [{translateX}],
             },
           ]}
@@ -78,6 +87,9 @@ function TabViewBase(props: Props, ref) {
                 ]}>
                 {route.title}
               </Animated.Text>
+              {/* <View style={styles.badge}>
+                <Text mode="SemiBold" style={{color: '#fff'}}>9</Text>
+              </View> */}
             </TouchableOpacity>
           );
         })}
@@ -113,6 +125,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 12,
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   focusTab: {
     backgroundColor: 'rgb(198, 231, 255)',
@@ -132,4 +146,13 @@ const styles = StyleSheet.create({
   focusedLabel: {
     color: '#00AEEF',
   },
+
+  badge: {
+    backgroundColor: 'rgb(255, 91, 5)',
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    marginLeft: 4,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });

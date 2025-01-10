@@ -4,6 +4,7 @@ import {FlashList} from '@shopify/flash-list';
 import {Divider} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Text from '@/fe-component/Text';
+import ListHeaderComponent from '../FlashList/ListHeaderComponent';
 
 const expandAllNodes = (nodes, isExpanded = false) => {
   return nodes.map(node => {
@@ -105,6 +106,7 @@ const Tree = (props: Props) => {
         />
       )}
       estimatedItemSize={100}
+      ListHeaderComponent={<ListHeaderComponent data={data} isSuccess={true} />}
       showsVerticalScrollIndicator={false}
     />
   );

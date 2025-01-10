@@ -59,7 +59,7 @@ function UploadMedia(props: Props) {
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={renderItem}
-        contentContainerStyle={{paddingTop: 8}}
+        contentContainerStyle={{paddingTop: images.length > 0 ? 8 : 0}}
         ListFooterComponent={ListFooterComponent}
         estimatedItemSize={80} // Tối ưu hiệu suất FlashList
       />

@@ -7,6 +7,7 @@ import {Divider, useTheme} from 'react-native-paper';
 import {BottomSheetFlashList} from '@gorhom/bottom-sheet';
 import TextInput from '../TextInput';
 import {useNavigation} from '@react-navigation/native';
+import ListHeaderComponent from '../FlashList/ListHeaderComponent';
 
 interface Props {
   value?: string;
@@ -19,6 +20,7 @@ interface Props {
   disabled?: boolean;
   containerStyle: any;
   screen?: string;
+  index?: number;
 }
 
 const Select = (props: Props) => {
@@ -35,6 +37,7 @@ const Select = (props: Props) => {
     disabled = false,
     containerStyle = {},
     screen = '',
+    index = 1,
   } = props;
   const [isVisible, setVisible] = useState(false);
 
@@ -78,6 +81,7 @@ const Select = (props: Props) => {
     <>
       <TouchableOpacity
         activeOpacity={0.8}
+        disabled={disabled}
         style={[
           SIZE[size],
           styles.container,
@@ -102,7 +106,7 @@ const Select = (props: Props) => {
       <BottomSheet
         title={placeholder}
         isVisible={isVisible}
-        index={1}
+        index={index}
         points={['25%', '50%', '90%']}>
         <View style={{marginHorizontal: 20, paddingTop: 8}}>
           <TextInput placeholder={'Tìm kiếm'} />
@@ -113,6 +117,9 @@ const Select = (props: Props) => {
           keyExtractor={item => item.value}
           renderItem={renderItem}
           estimatedItemSize={43.3}
+          ListHeaderComponent={
+            <ListHeaderComponent data={data} isSuccess={true} />
+          }
           contentContainerStyle={{paddingHorizontal: 20}}
         />
       </BottomSheet>
@@ -131,7 +138,7 @@ const styles = StyleSheet.create({
     borderColor: '#D9D9D9', // Màu viền
     paddingRight: 0, // Khoảng cách padding ngang
     backgroundColor: '#FFFFFF', // Màu nền trắng
-    borderRadius: 4,
+    borderRadius: 8,
   },
   text: {
     fontSize: 16, // Kích thước chữ

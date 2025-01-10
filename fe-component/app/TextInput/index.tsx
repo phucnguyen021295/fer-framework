@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 4,
-    paddingLeft: 16,
+    borderRadius: 8,
+    paddingLeft: 12,
     paddingRight: 8,
     width: "100%",
   },
@@ -50,6 +50,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     height: "100%",
-    fontFamily: "SVN-Gilroy",
+    fontFamily: "Roboto",
   },
 });

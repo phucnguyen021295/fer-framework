@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import {View, StyleSheet, TouchableOpacity, TouchableOpacityProps} from 'react-native';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Text from '../Text';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface Props extends TouchableOpacityProps {
   checked: boolean;
@@ -10,18 +10,19 @@ interface Props extends TouchableOpacityProps {
 }
 
 const Checkbox = (props: Props) => {
-  const {checked, label, onChange, ...otherProps} = props;
+  const {checked, label, onChange, disabled, ...otherProps} = props;
 
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={onChange}
       activeOpacity={0.8}
+      disabled={disabled}
       {...otherProps}
       >
-      <View style={styles.checkbox}>
+      <View style={[styles.checkbox, disabled && styles.disabled]}>
         {checked && (
-          <FontAwesome6 name="check" size={18} color="#00AEEF" />
+          <AntDesign name="check" size={18} color="#00AEEF" />
         )}
       </View>
       <Text style={styles.label}>{label}</Text>
@@ -60,4 +61,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 2
   },
+
+  disabled: {
+    backgroundColor: '#F0F0F0'
+  }
 });

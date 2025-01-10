@@ -15,15 +15,16 @@ interface Props extends TouchableOpacityProps {
 }
 
 const Radio = (props: Props) => {
-  const {checked, label, onChange, ...otherProps} = props;
+  const {checked, label, onChange, disabled, ...otherProps} = props;
 
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={onChange}
       activeOpacity={0.8}
+      disabled={disabled}
       {...otherProps}>
-      <View style={styles.checkbox}>
+      <View style={[styles.checkbox, disabled && styles.disabled]}>
         {checked ? (
           <Fontisto name="radio-btn-active" size={22} color="#00AEEF" />
         ) : (
@@ -66,4 +67,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 2,
   },
+
+  disabled: {
+    backgroundColor: '#F0F0F0',
+    borderRadius: 12,
+  }
 });
