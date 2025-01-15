@@ -1,5 +1,8 @@
-import { getCookie } from "cookies-next";
+import {getCookie} from 'cookies-next';
 
-export const getToken = () => getCookie('token');
+export const getToken = (state: any) => getCookie('token');
 
-export const getOrganizationCode = () => getCookie('organizationCode');
+export const getRefreshToken = (state: any) => getCookie('refreshToken');
+
+export const getOrganizationCode = (state: any) =>
+  getCookie('organizationCode');

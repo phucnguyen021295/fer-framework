@@ -41,7 +41,7 @@ function PersonalInformation(props) {
           <LinearGradient
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            colors={['#00AEEF', '#08c8f9', '#E6F7FF']}
+            colors={['#21418A', '#08c8f9']}
             style={{borderRadius: 18}}>
             <View style={styles.code}>
               <Text style={{color: '#fff'}}>Mã NV: {user?.employeeCode}</Text>

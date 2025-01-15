@@ -17,6 +17,7 @@ interface Props extends BottomSheetModalProps {
   children: React.ReactNode;
   points: string[];
   onClose?: () => void;
+  mode?: 'backdrop' | 'un-backdrop';
 }
 
 const BottomSheet = (props: Props) => {
@@ -27,12 +28,13 @@ const BottomSheet = (props: Props) => {
     children,
     points = ['50%'],
     onClose,
+    mode = 'backdrop',
     ...otherProps
   } = props;
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
-    if (!bottomSheetModalRef.current) return;
+    if (!bottomSheetRef.current) return;
     if (isVisible) {
       onOpen();
     } else {
@@ -46,25 +48,27 @@ const BottomSheet = (props: Props) => {
 
   // callbacks
   const onOpen = useCallback(() => {
-    bottomSheetModalRef.current?.present();
+    bottomSheetRef.current?.present();
   }, []);
 
   const onDismiss = () => {
-    bottomSheetModalRef.current?.close();
+    bottomSheetRef.current?.close();
     onClose && onClose();
   };
 
   // renders
   return (
     <BottomSheetModal
-      ref={bottomSheetModalRef}
+      ref={bottomSheetRef}
       // index={2}
       snapPoints={snapPoints}
       containerStyle={styles.containerStyle}
       onDismiss={onDismiss}
-      backdropComponent={backdropProps => (
-        <BottomSheetBackdrop {...backdropProps} disappearsOnIndex={-1} />
-      )}
+      backdropComponent={backdropProps =>
+        mode === 'backdrop' ? (
+          <BottomSheetBackdrop {...backdropProps} disappearsOnIndex={-1} />
+        ) : null
+      }
       {...otherProps}>
       <BottomSheetView style={styles.contentContainer}>
         {title && (
@@ -73,17 +77,19 @@ const BottomSheet = (props: Props) => {
               {title}
             </Text>
             <Divider horizontalInset />
-            <AntDesign
-              name="close"
-              size={22}
-              color="black"
-              style={styles.close}
-              onPress={onDismiss}
-            />
+            {mode === 'backdrop' && (
+              <AntDesign
+                name="close"
+                size={22}
+                color="black"
+                style={styles.close}
+                onPress={onDismiss}
+              />
+            )}
           </>
         )}
         {children}
-        <View style={{height: bottom}} />
+        <View style={{height: bottom + 8}} />
       </BottomSheetView>
     </BottomSheetModal>
   );

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -55,12 +55,17 @@ Reanimated.addWhitelistedNativeProps({
   zoom: true,
 });
 
-const options = ['PHOTO', 'VIDEO'];
+const OPTIONS = ['PHOTO', 'VIDEO'];
 
-const CameraScreen = (props) => {
+const CameraScreen = props => {
   const navigation = useNavigation();
   const {route} = props;
-  const {onUpload} = route.params;
+  /**
+   * 1. onUpload: hàm callback sau khi chọn ảnh.
+   * 2. options: là loại photo hay video, mặc định có 2 option.
+   * 3. hideMedia: trạng thái ẩn hiện media.
+   */
+  const {onUpload, options = OPTIONS, hideMedia} = route.params;
   const {left, right, top, bottom} = useSafeAreaInsets();
   const cameraRef = useRef<Camera>(null);
   const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>(
@@ -105,7 +110,6 @@ const CameraScreen = (props) => {
   }, [maxZoom, minZoom, zoom]);
 
   const fps = Math.min(format?.maxFps ?? 1, targetFps);
-
 
   //#region Effects
   useEffect(() => {
@@ -311,7 +315,12 @@ const CameraScreen = (props) => {
           style={{bottom, position: 'absolute'}}
         />
 
-        <MediaButton onUpload={onUpload} style={[styles.mediaContainer, {left: 32, bottom: bottom + 40}]} />
+        {!hideMedia && (
+          <MediaButton
+            onUpload={onUpload}
+            style={[styles.mediaContainer, {left: 32, bottom: bottom + 40}]}
+          />
+        )}
 
         <View
           style={[styles.rightButtonRow, {top: top + 12, right: right || 12}]}>
@@ -333,7 +342,7 @@ const CameraScreen = (props) => {
   );
 };
 
-export default CameraScreen;
+export default memo(CameraScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -399,6 +408,6 @@ const styles = StyleSheet.create({
   },
 
   mediaContainer: {
-    position: 'absolute'
-  }
+    position: 'absolute',
+  },
 });

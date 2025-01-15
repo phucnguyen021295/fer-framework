@@ -123,12 +123,10 @@ const WrapperPermission = (props: Props) => {
           ) : null}
           {isPermission ? (
             <>
-              <Button size="small" onPress={openSettings}>
+              <Button type="primary" onPress={openSettings}>
                 Cấp quyền
               </Button>
-              <Button size="small" mode="outlined" onPress={goBack}>
-                Quay lại
-              </Button>
+              <Button onPress={goBack}>Quay lại</Button>
             </>
           ) : null}
         </View>

@@ -12,10 +12,10 @@ import {
 const {width} = Dimensions.get('window');
 
 interface Props {
-    style:  any;
-    setType: (value: string) => void;
-    type: string;
-    options: string[]
+  style: any;
+  setType: (value: string) => void;
+  type: string;
+  options: string[];
 }
 
 const CameraOptions = (props: Props) => {
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     width: width / 4, // Đảm bảo kích thước đều nhau
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 4,
     // Shadow cho Android
