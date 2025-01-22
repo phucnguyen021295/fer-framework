@@ -1,12 +1,13 @@
 import React, {memo, useMemo, useState} from 'react';
 import {
+  Alert,
   Linking,
-  PermissionsAndroid,
   Platform,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
 import ImagePicker from 'react-native-image-crop-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Avatar, {SIZE, SIZE_AVATAR} from './index';
@@ -15,20 +16,54 @@ import BottomSheet from '../BottomSheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import Button from '../Button';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
 interface Props {
   uri: string;
   size?: SIZE;
   onUploadImage: (image: any) => void;
+  loading?: boolean;
 }
 
 function EditAvatar(props: Props) {
   const navigation = useNavigation();
-  const {uri, size = 'Medium', onUploadImage} = props;
+  const {uri, size = 'Medium', onUploadImage, loading} = props;
   const [isVisible, setVisible] = useState(false);
   const [isPermission, setPermission] = useState(false);
 
-  const openPicker = async () => {
+  const onOpenPicker = async () => {
+    const result = await check(
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.PHOTO_LIBRARY
+        : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+    );
+
+    switch (result) {
+      case RESULTS.UNAVAILABLE:
+        Alert.alert('Photo Library is not available on this device.');
+        break;
+      case RESULTS.DENIED:
+        const requestResult = await request(
+          Platform.OS === 'ios'
+            ? PERMISSIONS.IOS.PHOTO_LIBRARY
+            : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+        );
+        if (requestResult === RESULTS.GRANTED) {
+          openPicker();
+        } else {
+          setPermission(true);
+        }
+        break;
+      case RESULTS.GRANTED:
+        openPicker();
+        break;
+      case RESULTS.BLOCKED:
+        setPermission(true);
+        break;
+    }
+  };
+
+  const openPicker = () => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -38,11 +73,9 @@ function EditAvatar(props: Props) {
       cropperCircleOverlay: true,
     })
       .then(image => {
-        onUploadImage([image]);
+        onUploadImage(image);
       })
-      .catch(() => {
-        setPermission(true);
-      });
+      .catch(() => {});
   };
 
   const onTakeAPhoto = () => {
@@ -57,12 +90,22 @@ function EditAvatar(props: Props) {
   const openSettings = async () => await Linking.openSettings();
 
   const onUploadLocal = (image = []) => {
-    onUploadImage(image);
+    ImagePicker.openCropper({
+      path: image[0].path,
+      width: 300,
+      height: 400,
+      cropperChooseText: 'Tải lên',
+      cropperCancelText: 'Huỷ',
+      cropperCircleOverlay: true,
+    }).then(image => {
+      console.log(image);
+      onUploadImage(image);
+    });
   };
 
   const onPicture = () => {
     setVisible(false);
-    openPicker();
+    onOpenPicker();
   };
 
   const avatar_style = useMemo(() => {
@@ -82,6 +125,7 @@ function EditAvatar(props: Props) {
         <View style={styles.iconPen}>
           <AntDesign name="camerao" size={12} color={'#fff'} />
         </View>
+        {loading && <ActivityIndicator size={'small'} style={styles.loading} />}
       </TouchableOpacity>
       <BottomSheet
         isVisible={isVisible}
@@ -160,5 +204,13 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     paddingVertical: 12,
     paddingHorizontal: 16,
+  },
+
+  loading: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });

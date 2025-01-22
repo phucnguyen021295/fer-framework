@@ -1,6 +1,7 @@
-import Text from "@/fe-component/Text";
-import React, { memo, ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import Text from '@/fe-component/Text';
+import React, {memo, ReactNode} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useTheme} from 'react-native-paper';
 
 interface Props {
   label?: string;
@@ -11,11 +12,12 @@ interface Props {
 }
 
 const FormItem = (props: Props) => {
-  const { children, label, name, error, require } = props;
+  const theme = useTheme();
+  const {children, label, name, error, require} = props;
   return (
     <View style={styles.container}>
       {label ? (
-        <Text style={styles.label}>
+        <Text style={[styles.label, {color: theme.color_text_base}]}>
           {label} {require && <Text style={{color: 'red'}}>*</Text>}
         </Text>
       ) : null}
@@ -33,11 +35,11 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingBottom: 6,
-    color: '#414651'
+    color: '#414651',
   },
 
   textError: {
-    color: "red",
+    color: 'red',
     paddingTop: 4,
     fontSize: 12,
   },

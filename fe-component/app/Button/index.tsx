@@ -1,7 +1,6 @@
 import {Button, ButtonProps} from '@ant-design/react-native';
 import React, {memo, useMemo} from 'react';
 import {StyleSheet} from 'react-native';
-import {useTheme} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   small: {
@@ -30,7 +29,6 @@ interface Props extends ButtonProps {
 }
 
 const ButtonBase = (props: Props) => {
-  const theme = useTheme();
   const {size = 'medium', style, ...otherProps} = props;
 
   const _fontSize = useMemo(() => {
@@ -45,12 +43,7 @@ const ButtonBase = (props: Props) => {
         ghostRawText: {
           fontSize: _fontSize,
           fontFamily: 'Roboto',
-          color: theme.colors.primary,
         },
-        primaryRaw: {marginLeft: 0, backgroundColor: theme.colors.primary, borderWidth: 0},
-        primaryHighlight: {backgroundColor: theme.colors.inversePrimary},
-        defaultRaw: {marginLeft: 0},
-        ghostRaw: {marginLeft: 0, borderColor: theme.colors.primary},
       }}
       style={[sizeStyles[size], style]}
       {...otherProps}

@@ -7,6 +7,7 @@ import {SIZE, sizeProps} from '../theme';
 import {Text, useTheme} from 'react-native-paper';
 import moment, {Moment} from 'moment';
 import Button from '../Button';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface Props {
   value: Moment;
@@ -15,7 +16,9 @@ interface Props {
   onChange: (value: Moment) => void;
   defaultValue?: Moment;
   disabled?: boolean;
-  containerStyle: any;
+  containerStyle?: any;
+  allowClear?: boolean;
+  onClearValue: () => void;
 }
 
 function DateTimePicker(props: Props) {
@@ -26,6 +29,8 @@ function DateTimePicker(props: Props) {
     onChange,
     disabled = false,
     containerStyle = {},
+    allowClear,
+    onClearValue,
   } = props;
   const theme = useTheme();
   const [isVisible, setVisible] = useState(false);
@@ -35,6 +40,11 @@ function DateTimePicker(props: Props) {
     setDate(date);
     setVisible(false);
     onChange(date);
+  };
+
+  const onClear = () => {
+    onChangeSelect(moment());
+    onClearValue();
   };
 
   return (
@@ -52,12 +62,22 @@ function DateTimePicker(props: Props) {
         <Text style={value ? styles.text : styles.placeholder}>
           {value ? value.format('DD/MM/YYYY') : placeholder}
         </Text>
-        <Fontisto
-          name="date"
-          size={24}
-          style={{paddingRight: 8}}
-          color={theme.colors.primary}
-        />
+        {allowClear && value ? (
+          <AntDesign
+            name="closecircleo"
+            size={20}
+            color="#898989"
+            style={{paddingRight: 8}}
+            onPress={onClear}
+          />
+        ) : (
+          <Fontisto
+            name="date"
+            size={24}
+            style={{paddingRight: 8}}
+            color={theme.colors.primary}
+          />
+        )}
       </TouchableOpacity>
       <BottomSheet
         // title={placeholder}

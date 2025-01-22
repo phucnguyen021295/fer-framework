@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import {StyleProp, View as ViewCore, ViewProps, ViewStyle} from 'react-native';
 import {useTheme} from 'react-native-paper';
 
@@ -10,15 +11,15 @@ interface Props extends ViewProps {
   style?: StyleProp<ViewStyle>;
 }
 
-function View(props: Props) {
-  const {colors} = useTheme();
+function ViewTheme(props: Props) {
+  const theme = useTheme();
   const {style, ...otherProps} = props;
   return (
     <ViewCore
-      style={[{backgroundColor: colors.background}, style]}
+      style={[{backgroundColor: theme.fill_base}, style]}
       {...otherProps}
     />
   );
 }
 
-export default View;
+export default memo(ViewTheme);

@@ -1,12 +1,10 @@
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import { useNavigation } from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Image, TouchableOpacity} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 
 const MediaButton = props => {
-  const navigation = useNavigation();
-  const {style, onUpload} = props;
+  const {style, onSelectImage} = props;
   const [image, setImage] = useState<any>(null);
 
   useEffect(() => {
@@ -16,12 +14,10 @@ const MediaButton = props => {
   const handlePickImage = () => {
     ImagePicker.openPicker({
       multiple: true,
-      maxFiles: 5
+      maxFiles: 5,
     }).then(images => {
       console.log('handlePickImage', images);
-      onUpload(images);
-      navigation.goBack();
-      return true;
+      onSelectImage(images);
     });
   };
 
@@ -40,13 +36,16 @@ const MediaButton = props => {
   };
 
   return (
-    <TouchableOpacity style={[styles.container, style]} activeOpacity={0.7} onPress={handlePickImage}>
+    <TouchableOpacity
+      style={[styles.container, style]}
+      activeOpacity={0.7}
+      onPress={handlePickImage}>
       {image ? (
         <Image
           style={{
             width: 56,
             height: 56,
-            borderRadius: 4
+            borderRadius: 4,
           }}
           source={{uri: image.node.image.uri}}
         />
