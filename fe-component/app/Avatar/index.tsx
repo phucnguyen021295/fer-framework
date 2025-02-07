@@ -2,7 +2,15 @@ import FastImage from '@d11/react-native-fast-image';
 import React, {memo, useMemo} from 'react';
 import {Surface} from 'react-native-paper';
 
-export type SIZE = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Big' | 'Bigger' | 'Biggest' | 'Huge';
+export type SIZE =
+  | 'Tiny'
+  | 'Small'
+  | 'Medium'
+  | 'Large'
+  | 'Big'
+  | 'Bigger'
+  | 'Biggest'
+  | 'Huge';
 
 export const SIZE_AVATAR = {
   Tiny: 24,
@@ -31,18 +39,14 @@ function AvatarBase(props: Props) {
       borderRadius: SIZE_AVATAR[size] / 2,
     };
   }, [size]);
-
   return (
-    <Surface
-      elevation={elevation}
-      style={avatar_style}>
+    <Surface elevation={elevation} style={avatar_style}>
       <FastImage
-        source={
-          uri
-            ? {uri: `${uri}?time=${new Date().getTime()}`}
-            : require('./images/user.png')
-        }
-        style={avatar_style}
+        source={uri ? {uri: uri} : require('./images/user.png')}
+        style={[
+          {backgroundColor: '#ddd', borderColor: '#ddd', borderWidth: 1.5},
+          avatar_style,
+        ]}
       />
     </Surface>
   );

@@ -19,7 +19,7 @@ interface Props extends TextProps {
 }
 
 function Text(props: Props) {
-  const {colors} = useTheme();
+  const theme = useTheme();
   const {
     type = 'Default',
     mode = 'Regular',
@@ -32,15 +32,15 @@ function Text(props: Props) {
 
   const _color = useMemo(() => {
     if (type === 'Link') {
-      return {color: colors.primary};
+      return {color: theme.brand_primary};
     }
 
     if (type === 'Secondary') {
-      return {color: colors.outline};
+      return {color: theme.colors.outline};
     }
 
-    return {color: colors.onBackground};
-  }, [type, colors]);
+    return {color: theme.color_text_base};
+  }, [type, theme]);
 
   const _size = styles[size];
 

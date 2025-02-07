@@ -93,15 +93,15 @@ const CameraPreview = ({photo, retakePicture, savePhoto}: any) => {
               justifyContent: 'flex-end',
               gap: 12,
             }}>
-            <Button style={{width: 100}} onPress={retakePicture}>
+            <Button style={{width: 132}} onPress={retakePicture}>
               Huỷ
             </Button>
 
             <Button
-              style={{width: 100}}
+              style={{width: 132}}
               type="primary"
               onPress={() => savePhoto([photo])}>
-              Tải lên
+              Sử dụng ảnh
             </Button>
           </View>
         </View>

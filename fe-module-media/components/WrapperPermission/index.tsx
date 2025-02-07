@@ -1,12 +1,10 @@
-import React, {Children, useCallback, useEffect, useRef, useState} from 'react';
-import {View, TouchableOpacity, StyleSheet, Alert, Linking} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {View, StyleSheet, Linking} from 'react-native';
 import {
   Camera,
   CameraPermissionStatus,
-  useCameraDevice,
   useCameraDevices,
   useCameraPermission,
-  useMicrophonePermission,
 } from 'react-native-vision-camera';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
@@ -78,9 +76,7 @@ const WrapperPermission = (props: Props) => {
           <Text size="Medium" style={styles.description}>
             Thiết bị này không hỗ trợ chức năng camera
           </Text>
-          <Button size="small" mode="outlined" onPress={goBack}>
-            Quay lại
-          </Button>
+          <Button onPress={goBack}>Quay lại</Button>
         </View>
       </View>
     );

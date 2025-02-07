@@ -136,7 +136,12 @@ function CodeScannerPage(props) {
         <StatusBarBlurBackground />
 
         <View style={[styles.des, {top: scanArea.y * height - 48}]}>
-          <Text mode="SemiBold" size="Larger" style={{textAlign: 'center', color: '#fff'}}>Di chuyển lại gần mã QR code</Text>
+          <Text
+            mode="SemiBold"
+            size="Larger"
+            style={{textAlign: 'center', color: '#fff'}}>
+            Di chuyển lại gần mã QR code
+          </Text>
         </View>
 
         <View style={styles.overlay}>

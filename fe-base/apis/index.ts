@@ -52,14 +52,13 @@ const baseQueryWithReauth: BaseQueryFn<
         const refreshToken = getRefreshToken(api.getState());
         const refreshResult = await baseQuery(
           {
-            url: '/api/v1/auth/refresh-token',
+            url: process.env?.AUTH_URL_REFRESH_TOKEN || '',
             method: 'POST',
             body: {refreshToken},
           },
           api,
           extraOptions,
         );
-        console.log('refreshResult', refreshResult);
         if (refreshResult.data) {
           api.dispatch({
             type: AUTH_ACTION.TOKEN_RECEIVED,

@@ -1,7 +1,7 @@
 import AppBar from '@/fe-component/AppBar';
 import React, {memo} from 'react';
 import {StyleSheet, SafeAreaView, View, Clipboard} from 'react-native';
-import ViewTheme from '@/fe-component/View';
+import ViewTheme from '@/fe-component/ViewTheme';
 import Avatar from '@/fe-component/Avatar';
 import Text from '@/fe-component/Text';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -34,7 +34,7 @@ function PersonalInformation(props) {
       <AppBar title={'Thông tin cá nhân'} />
       <View style={styles.info}>
         <View style={styles.header}>
-          <Avatar uri="" size="Bigger" elevation={1} />
+          <Avatar uri={user?.avatar} size="Bigger" elevation={0} />
           <Text size="Larger" mode="SemiBold">
             {user?.fullName}
           </Text>

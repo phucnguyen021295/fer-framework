@@ -11,18 +11,13 @@ import {
   CameraRuntimeError,
   PhotoFile,
   useCameraDevice,
-  useCameraDevices,
   useCameraFormat,
   useMicrophonePermission,
   VideoFile,
 } from 'react-native-vision-camera';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {
-  useFocusEffect,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {
   PinchGestureHandler,
   PinchGestureHandlerGestureEvent,
@@ -156,7 +151,7 @@ const CameraScreen = props => {
     return true;
   };
 
-  const __savePhoto = photo => {
+  const onSelectImage = photo => {
     onUpload(photo);
     navigation.goBack();
     return true;
@@ -222,7 +217,7 @@ const CameraScreen = props => {
       <View style={styles.container}>
         <CameraPreview
           photo={capturedImage}
-          savePhoto={__savePhoto}
+          savePhoto={onSelectImage}
           retakePicture={__retakePicture}
         />
         <View style={[styles.leftButtonRow, {top, left: left || 12}]}>
@@ -317,7 +312,7 @@ const CameraScreen = props => {
 
         {!hideMedia && (
           <MediaButton
-            onUpload={onUpload}
+            onSelectImage={onSelectImage}
             style={[styles.mediaContainer, {left: 32, bottom: bottom + 40}]}
           />
         )}
