@@ -53,7 +53,7 @@ const GlobalHeader: FC<Props> = memo((props: Props) => {
   console.log("GlobalHeader", isMobile);
   return (
     <Flex align="center" justify="space-between" style={{ height: "100%" }}>
-      <Flex style={{ height: "100%" }} align="center">
+      <Flex style={{ height: "100%" }} flex={1} align="center">
         {!isMobile && showLogo && (
           <GlobalLogo
             style={{
@@ -69,7 +69,7 @@ const GlobalHeader: FC<Props> = memo((props: Props) => {
         {isMobile ? <MenuToggler /> : null}
         {/* <div>{reverse ? true : showMenuToggler}</div> */}
 
-        <div id={GLOBAL_HEADER_MENU_ID}>
+        <div id={GLOBAL_HEADER_MENU_ID} style={{ flex: 1 }}>
           {/* {!isMobile && !showMenu && <GlobalBreadcrumb className="ml-12px" />} */}
         </div>
       </Flex>

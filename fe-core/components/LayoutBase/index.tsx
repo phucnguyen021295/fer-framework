@@ -2,8 +2,8 @@
 configResponsive({ xs: 0, sm: 576, md: 768, lg: 992, xl: 1200, xxl: 1600 });
 
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Drawer, Layout, theme } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { Layout, theme } from "antd";
 import { configResponsive, useResponsive } from "ahooks";
 
 import GlobalHeader from "../GlobalHeader";
@@ -11,6 +11,7 @@ import GlobalSider from "../GlobalSider";
 
 // Reducer
 import {
+  appSelector,
   setCollapsedSider,
   setIsMobile,
   setLayoutMode,
@@ -32,10 +33,10 @@ const { Header, Sider, Content, Footer } = Layout;
 interface Props {
   children: React.ReactNode;
   layoutMode: ThemeLayoutMode; // Loai hiển thị layout
-  headerHeight: number; // Chiều cao header
-  widthSider: number;
+  headerHeight?: number; // Chiều cao header
+  widthSider?: number;
   collapsedSider: boolean;
-  showFooter: boolean; // Trạng thái ẩn hiện footer
+  showFooter?: boolean; // Trạng thái ẩn hiện footer
   FooterComponent?: React.ReactNode;
 }
 
@@ -43,7 +44,7 @@ export default function LayoutBase(props: Props) {
   const {
     children,
     layoutMode,
-    headerHeight = 60,
+    headerHeight = 64,
     widthSider = 270,
     collapsedSider,
     showFooter,
@@ -54,7 +55,8 @@ export default function LayoutBase(props: Props) {
   const {
     token: { headerBg },
   } = theme.useToken();
-  const {md, lg, xl} = useResponsive();
+  const { md, lg, xl } = useResponsive();
+  const darkModeSider = useSelector(appSelector.getDarkModeSider);
   const isMobile = !md;
 
   useLayoutEffect(() => {
@@ -64,7 +66,7 @@ export default function LayoutBase(props: Props) {
       dispatch(setCollapsedSider(true));
       return;
     }
-    if(!lg || (lg && !xl)) {
+    if (!lg || (lg && !xl)) {
       dispatch(setCollapsedSider(true));
     }
   }, [isMobile, lg, xl, dispatch]);
@@ -109,27 +111,9 @@ export default function LayoutBase(props: Props) {
   const SiderLayout = useMemo(() => {
     if (!showSider) return null;
 
-    // if (isMobile) {
-    //   return (
-    //     <Drawer
-    //       title="Drawer with extra actions"
-    //       placement={'left'}
-    //       width={400}
-    //       // onClose={onClose}
-    //       open={!collapsedSider}
-    //     >
-    //       <GlobalSider
-    //         siderCollapse={collapsedSider}
-    //         headerHeight={headerHeight}
-    //         mode={layoutMode}
-    //       />
-    //     </Drawer>
-    //   );
-    // }
-
     return (
       <Sider
-        theme={mode}
+        theme={darkModeSider ? "dark" : mode} // Ưu tiên loại darkmode xong mới đến theme
         width={widthSider}
         style={siderStyle}
         collapsed={collapsedSider}
@@ -144,7 +128,7 @@ export default function LayoutBase(props: Props) {
         />
       </Sider>
     );
-  }, [collapsedSider, showSider, layoutMode, mode, isMobile]);
+  }, [collapsedSider, showSider, layoutMode, mode, isMobile, darkModeSider]);
 
   return (
     <Layout style={layoutStyle}>

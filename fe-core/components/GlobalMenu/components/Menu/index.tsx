@@ -24,7 +24,11 @@ const menuData = [
     // icon: <BorderHorizontalOutlined />,
     children: [
       { key: "/booking", label: "Đặt chỗ", link: "/booking" },
-      { key: "/booking-list", label: "Danh sách đặt chỗ", link: "/booking-list" },
+      {
+        key: "/booking-list",
+        label: "Danh sách đặt chỗ",
+        link: "/booking-list",
+      },
       { key: "/ticketing", label: "Nghiệp vụ vé", link: "/ticketing" },
       { key: "/stuffed", label: "Nhồi booking", link: "/stuffed" },
     ],
@@ -48,7 +52,6 @@ const menuData = [
     link: "/config",
   },
 ];
-
 
 const mapMenuItems = (items) => {
   return items.map((item) => {
@@ -75,8 +78,8 @@ const MenuBase: React.FC<Props> = (props: Props) => {
   const items = useSelector(appSelector.getItemsMenu);
   const theme = useSelector(appSelector.getTheme);
   const collapsed = useSelector(appSelector.getCollapsedSider);
+  const darkMode = useSelector(appSelector.getDarkModeSider);
   const [current, setCurrent] = useState(path);
-  const [openKeys, setOpenKeys] = useState([]);
 
   const getDefaultOpenKeys = (path) => {
     const openKeys = [];
@@ -99,7 +102,7 @@ const MenuBase: React.FC<Props> = (props: Props) => {
 
   return (
     <Menu
-      theme={theme}
+      theme={darkMode ? "dark" : theme}
       onClick={onClick}
       selectedKeys={[current]}
       style={{ height: "100%" }}
@@ -107,9 +110,7 @@ const MenuBase: React.FC<Props> = (props: Props) => {
       defaultOpenKeys={getDefaultOpenKeys(path)}
       mode={mode}
       inlineCollapsed={collapsed}
-      // items={items}
     >
-      
       {mapMenuItems(items)}
     </Menu>
   );

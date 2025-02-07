@@ -19,6 +19,7 @@ interface appState {
     collapsedWidth: number;
     width: number;
     collapsedSider: boolean;
+    darkMode: boolean;
   };
   memu: {
     showMenuToggler: boolean;
@@ -29,7 +30,7 @@ interface appState {
     showFooter: boolean;
   };
   isMobile: boolean;
-  theme: 'light' | 'dark';
+  theme: "light" | "dark";
 }
 
 // Define the initial state using that type
@@ -41,7 +42,7 @@ const initialState: appState = {
     showLogo: true,
     logo: "",
     heightLogo: 32,
-    headerHeight: 60,
+    headerHeight: 64,
   },
   sider: {
     showSider: true,
@@ -49,6 +50,7 @@ const initialState: appState = {
     collapsedSider: false,
     collapsedWidth: 80,
     width: 270,
+    darkMode: false,
   },
   memu: {
     showMenuToggler: false,
@@ -59,7 +61,7 @@ const initialState: appState = {
     showFooter: false,
   },
   isMobile: false,
-  theme: 'light'
+  theme: "light",
 };
 
 export const appSlice = createSlice({
@@ -92,8 +94,12 @@ export const appSlice = createSlice({
       state.memu.items = action.payload;
     },
 
-    setTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
+    setTheme: (state, action: PayloadAction<"light" | "dark">) => {
       state.theme = action.payload;
+    },
+
+    setDarkModeSider: (state, action: PayloadAction<boolean>) => {
+      state.sider.darkMode = action.payload;
     },
   },
   selectors: {
@@ -120,6 +126,8 @@ export const appSlice = createSlice({
     getItemsMenu: (state) => state.memu.items,
 
     getTheme: (state) => state.theme,
+
+    getDarkModeSider: (state) => state.sider.darkMode,
   },
 });
 
@@ -131,6 +139,7 @@ export const {
   setIsMobile,
   setItemsMenu,
   setTheme,
+  setDarkModeSider,
 } = appSlice.actions;
 
 export const appSelector = appSlice.selectors;
