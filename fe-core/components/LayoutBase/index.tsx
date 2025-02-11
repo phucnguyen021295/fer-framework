@@ -63,7 +63,7 @@ export default function LayoutBase(props: Props) {
     dispatch(setIsMobile(isMobile));
     if (isMobile) {
       dispatch(setLayoutMode(LAYOUT_MODE_VERTICAL));
-      dispatch(setCollapsedSider(true));
+      dispatch(setCollapsedSider(false));
       return;
     }
     if (!lg || (lg && !xl)) {

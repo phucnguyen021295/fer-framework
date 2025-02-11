@@ -33,11 +33,7 @@ const GlobalSider: FC<Props> = (props: Props) => {
           }}
         />
       )}
-      <div
-        id={GLOBAL_SIDER_MENU_ID}
-        // style={{ display: showLogo ? "none" : "block" }}
-        // className={showLogo ? "flex-1-hidden" : "h-full"}
-      />
+      <div id={GLOBAL_SIDER_MENU_ID} />
     </Flex>
   );
 };

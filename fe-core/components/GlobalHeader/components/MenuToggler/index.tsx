@@ -1,15 +1,11 @@
 import { Button, Drawer, Flex } from "antd";
 import { FC, memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import Image from "next/image";
 
 import { appSelector, setCollapsedSider } from "@/fe-core/reducers/app";
-import GlobalMenu from "../../../GlobalMenu";
+// import GlobalMenu from "../../../GlobalMenu";
 import { GLOBAL_SIDER_MENU_ID } from "@/fer-framework/fe-core/constants";
 import { createStyles } from "antd-style";
 import GlobalLogo from "../../../GlobalLogo";
@@ -73,6 +69,7 @@ const MenuToggler: FC<Props> = ({ arrowIcon }) => {
         }
         placement="left"
         width={320}
+        forceRender
         style={{ background: theme.colorBgBase }}
         className={styles.drawer}
         closable={false}

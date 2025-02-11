@@ -1,7 +1,7 @@
-import { createPortal } from 'react-dom';
-import { useGetElementById } from './hook';
-import { GLOBAL_SIDER_MENU_ID } from '@/fe-core/constants';
-import Menu from '../components/Menu';
+import { createPortal } from "react-dom";
+import { useGetElementById } from "./hook";
+import { GLOBAL_SIDER_MENU_ID } from "@/fe-core/constants";
+import Menu from "../components/Menu";
 
 const Vertical = () => {
   const container = useGetElementById(GLOBAL_SIDER_MENU_ID);
