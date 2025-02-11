@@ -3,7 +3,7 @@ import { Flex, Switch, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { appSelector, setDarkModeSider } from "../../reducers/app";
 
-const { Title } = Typography;
+const { Text } = Typography;
 
 const DarkModeSider: React.FC = () => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const DarkModeSider: React.FC = () => {
   };
   return (
     <Flex justify="space-between" align="center">
-      <Title level={5}>Dark mode sider</Title>
+      <Text strong>Dark mode sider</Text>
       <Switch value={darkMode} onChange={onChange} />
     </Flex>
   );

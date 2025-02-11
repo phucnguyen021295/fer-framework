@@ -1,11 +1,12 @@
 "use client";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { useSelector } from "react-redux";
 import { appSelector } from "@/fer-framework/fe-core/reducers/app";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import useLayoutBase from "../../../LayoutBase/useLayoutBase";
 
 interface Props {
   mode: "inline" | "horizontal";
@@ -77,7 +78,7 @@ const MenuBase: React.FC<Props> = (props: Props) => {
   const { mode = "inline" } = props;
   const items = useSelector(appSelector.getItemsMenu);
   const theme = useSelector(appSelector.getTheme);
-  const collapsed = useSelector(appSelector.getCollapsedSider);
+  const { isMobile, collapsedSider } = useLayoutBase();
   const darkMode = useSelector(appSelector.getDarkModeSider);
   const [current, setCurrent] = useState(path);
 
@@ -100,16 +101,24 @@ const MenuBase: React.FC<Props> = (props: Props) => {
     setCurrent(e.key);
   };
 
+  // Trường hợp mobile thì luôn hiển thị thông tin chi tiết menu
+  const _inlineCollapsed = useMemo(() => {
+    if (isMobile) {
+      return false;
+    }
+    return collapsedSider;
+  }, [collapsedSider, isMobile]);
+
   return (
     <Menu
-      theme={darkMode ? "dark" : theme}
+      theme={darkMode && mode === "inline" ? "dark" : theme}
       onClick={onClick}
       selectedKeys={[current]}
       style={{ height: "100%" }}
       defaultSelectedKeys={[current]}
       defaultOpenKeys={getDefaultOpenKeys(path)}
       mode={mode}
-      inlineCollapsed={collapsed}
+      inlineCollapsed={_inlineCollapsed}
     >
       {mapMenuItems(items)}
     </Menu>

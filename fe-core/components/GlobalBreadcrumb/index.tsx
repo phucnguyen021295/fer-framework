@@ -1,59 +1,56 @@
-import { Breadcrumb, BreadcrumbProps } from 'antd';
-import { cloneElement } from 'react';
-import type { MenuInfo } from 'rc-menu/lib/interface';
-import type { MenuItemType } from 'antd/es/menu/interface';
-import type {  } from 'antd';
-import { useRouterPush } from 'ahooks';
-import { getBreadcrumbsByRoute } from './shared';
+import { Breadcrumb, Typography } from "antd";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import { appSelector } from "../../reducers/app";
 
-function BreadcrumbContent({ label, icon }: { label: JSX.Element; icon: JSX.Element }) {
-  return (
-    <div className="i-flex-y-center align-middle">
-      {cloneElement(icon, { className: 'mr-4px text-icon', ...icon.props })}
-      {label}
-    </div>
-  );
-}
+const { Text } = Typography;
 
-const GlobalBreadcrumb: FC<Omit<BreadcrumbProps, 'items'>> = props => {
-  const { allMenus: menus, route } = useMixMenuContext();
+const transformMenuToBreadcrumb = (menuItems, path) => {
+  const breadcrumbs = [];
+  const findPath = (items, currentPath) => {
+    for (const item of items) {
+      if (item.link === currentPath) {
+        breadcrumbs.push(item);
+        return true;
+      }
+      if (item.children) {
+        if (findPath(item.children, currentPath)) {
+          breadcrumbs.unshift(item);
+          return true;
+        }
+      }
+    }
+    return false;
+  };
 
-  const routerPush = useRouterPush();
+  findPath(menuItems, path);
 
-  const breadcrumb = getBreadcrumbsByRoute(route, menus);
-
-  function handleClickMenu(menuInfo: MenuInfo) {
-    routerPush.routerPushByKeyWithMetaQuery(menuInfo.key);
-  }
-
-  const items: BreadcrumbProps['items'] = breadcrumb.map((item, index) => {
-    const commonTitle = (
-      <BreadcrumbContent
-        key={item.key}
-        label={item.label as JSX.Element}
-        icon={item.icon as JSX.Element}
-      />
-    );
-
-    return {
-      title: commonTitle,
-      ...('children' in item &&
-        item.children && {
-          menu: {
-            items: item.children.filter(Boolean) as MenuItemType[],
-            onClick: handleClickMenu,
-            selectedKeys: [breadcrumb[index + 1]?.key] as string[]
-          }
-        })
+  return breadcrumbs.map((item) => {
+    const breadcrumbItem = {
+      title: (
+        <>
+          {item.icon}
+          {item.label && <span>{item.label}</span>}
+        </>
+      ),
     };
-  });
 
-  return (
-    <Breadcrumb
-      {...props}
-      items={items}
-    />
-  );
+    // ⚡ Chỉ thêm `href` nếu có `children`
+    if (item.children) {
+      breadcrumbItem.href = item.link;
+    }
+
+    return breadcrumbItem;
+  });
+};
+
+const GlobalBreadcrumb = (props) => {
+  const pathname = usePathname();
+  const menuItems = useSelector(appSelector.getItemsMenu);
+  const breadcrumbItems = transformMenuToBreadcrumb(menuItems, pathname);
+
+  return <Breadcrumb items={breadcrumbItems} style={{ marginLeft: 16 }} />;
 };
 
 export default GlobalBreadcrumb;

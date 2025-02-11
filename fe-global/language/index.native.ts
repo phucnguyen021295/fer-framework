@@ -1,7 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import HttpApi from "i18next-http-backend";
-import LanguageDetector from "i18next-browser-languagedetector";
 
 interface Props {
   lng: "vi" | "en" | string;
@@ -12,22 +11,23 @@ interface Props {
   };
 }
 
-export const initI18n = (props: Props) => {
+const i18next = (props: Props) => {
   const { lng = "vi", resources } = props;
-  i18n
-    .use(LanguageDetector) // Phát hiện ngôn ngữ của user
-    .use(initReactI18next) // Kết nối với React
+  return i18n
+    .use(HttpApi)
+    .use(initReactI18next)
     .init({
       lng: lng,
       fallbackLng: lng,
       debug: true,
-      resources,
+      backend: {
+        loadPath: "https://example.com/locales/{{lng}}.json",
+      },
+      resources: resources,
       interpolation: {
-        escapeValue: false, // Không cần escape khi dùng HTML
+        escapeValue: false, // not needed for react as it escapes by default
       },
     });
-
-  return i18n;
 };
 
-export default i18n;
+export default i18next;

@@ -45,7 +45,7 @@ export default function LayoutBase(props: Props) {
     children,
     layoutMode,
     headerHeight = 64,
-    widthSider = 270,
+    widthSider = 280,
     collapsedSider,
     showFooter,
     FooterComponent,
@@ -80,6 +80,9 @@ export default function LayoutBase(props: Props) {
   };
 
   const { showSider, invertedSider } = useMemo(() => {
+    if (isMobile) {
+      return { showSider: false, invertedSider: true };
+    }
     // Trường hợp layout có header, content, footer
     if (layoutMode === LAYOUT_MODE_HORIZONTAL) {
       return { showSider: false, invertedSider: true };
@@ -94,7 +97,7 @@ export default function LayoutBase(props: Props) {
     }
 
     return { showSider: true, invertedSider: false };
-  }, [layoutMode]);
+  }, [layoutMode, isMobile]);
 
   const HeaderLayout = useMemo(() => {
     return (

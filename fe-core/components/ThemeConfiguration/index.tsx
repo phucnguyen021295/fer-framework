@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { Button, Drawer } from "antd";
+import { Button, Drawer, Flex } from "antd";
 import { LayoutOutlined } from "@ant-design/icons";
 import LayoutMode from "./LayoutMode";
 import DarkModeSider from "./DarkModeSider";
@@ -19,8 +19,10 @@ const ThemeConfiguration: React.FC = () => {
     <>
       <Button type="text" icon={<LayoutOutlined />} onClick={showDrawer} />
       <Drawer title="Theme Configuration" onClose={onClose} open={open}>
-        <DarkModeSider />
-        <LayoutMode />
+        <Flex gap={12} vertical>
+          <DarkModeSider />
+          <LayoutMode />
+        </Flex>
       </Drawer>
     </>
   );

@@ -6,11 +6,13 @@ function useLayoutBase() {
   const layoutMode = useSelector(appSelector.getLayoutMode);
   const collapsedSider = useSelector(appSelector.getCollapsedSider);
   const showFooter = useSelector(appSelector.getShowFooter);
+  const isMobile = useSelector(appSelector.getIsMobile);
 
   return {
     layoutMode,
     collapsedSider,
     showFooter,
+    isMobile,
   };
 }
 

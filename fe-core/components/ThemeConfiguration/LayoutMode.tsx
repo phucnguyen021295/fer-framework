@@ -11,7 +11,7 @@ import { setLayoutMode, appSelector } from "../../reducers/app";
 import { useDispatch, useSelector } from "react-redux";
 import { createStyles } from "antd-style";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const LayoutMode: React.FC = () => {
   const { styles, theme } = useStyles();
@@ -22,11 +22,9 @@ const LayoutMode: React.FC = () => {
   };
 
   return (
-    <Flex vertical>
-      <Title level={5} style={{ marginBottom: 12 }}>
-        Layout Mode
-      </Title>
-      <Flex wrap gap={12} align="center" justify="center">
+    <Flex vertical gap={12}>
+      <Text strong>Layout Mode</Text>
+      <Flex wrap gap={12} justify="flex-end">
         <Card
           hoverable
           onClick={() => toggleInverted(LAYOUT_MODE_VERTICAL)}
@@ -45,7 +43,7 @@ const LayoutMode: React.FC = () => {
           <Flex gap={4}>
             <div
               style={{
-                width: 30,
+                width: 20,
                 backgroundColor: theme.colorPrimaryBgHover,
                 height: 80,
                 borderRadius: 4,

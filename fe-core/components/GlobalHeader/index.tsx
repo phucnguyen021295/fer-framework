@@ -11,6 +11,7 @@ import Account from "./components/Account";
 import MenuToggler from "./components/MenuToggler";
 import ChangeTheme from "../ChangeTheme";
 import ThemeConfiguration from "../ThemeConfiguration";
+import GlobalBreadcrumb from "../GlobalBreadcrumb";
 
 const HEADER_PROPS_CONFIG: Record<ThemeLayoutMode, HeaderProps> = {
   vertical: {
@@ -61,7 +62,6 @@ const GlobalHeader: FC<Props> = memo((props: Props) => {
               display: "flex",
               alignItems: "center",
               height: "100%",
-              marginLeft: 28,
             }}
           />
         )}
@@ -70,7 +70,7 @@ const GlobalHeader: FC<Props> = memo((props: Props) => {
         {/* <div>{reverse ? true : showMenuToggler}</div> */}
 
         <div id={GLOBAL_HEADER_MENU_ID} style={{ flex: 1 }}>
-          {/* {!isMobile && !showMenu && <GlobalBreadcrumb className="ml-12px" />} */}
+          {!isMobile && !showMenu && <GlobalBreadcrumb />}
         </div>
       </Flex>
 
