@@ -6,28 +6,28 @@ import {
   BaseQueryFn,
   FetchBaseQueryError,
   FetchArgs,
-} from '@reduxjs/toolkit/query/react';
-import {Mutex} from 'async-mutex';
+} from "@reduxjs/toolkit/query/react";
+import { Mutex } from "async-mutex";
 import {
   getToken,
   getRefreshToken,
   getOrganizationCode,
-} from '@/fe-base/utils/getToken';
-import {AUTH_ACTION} from '../actions';
+} from "@/fe-base/utils/getToken";
+import { AUTH_ACTION } from "../actions";
 
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.URL_SERVER,
-  prepareHeaders: (headers, {getState, endpoint}) => {
-    headers.set('Content-Type', 'application/json');
+  prepareHeaders: (headers, { getState, endpoint }) => {
+    headers.set("Content-Type", "application/json");
     const state = getState();
     const token = getToken(state);
     const organizationCode = getOrganizationCode(state);
     if (!!token) {
-      headers.set('Authorization', `Bearer ${token}`);
+      headers.set("Authorization", `Bearer ${token}`);
     }
     if (!!organizationCode) {
-      headers.set('organizationCode', organizationCode);
+      headers.set("organizationCode", organizationCode);
     }
     return headers;
   },
@@ -52,12 +52,12 @@ const baseQueryWithReauth: BaseQueryFn<
         const refreshToken = getRefreshToken(api.getState());
         const refreshResult = await baseQuery(
           {
-            url: process.env?.AUTH_URL_REFRESH_TOKEN || '',
-            method: 'POST',
-            body: {refreshToken},
+            url: process.env?.AUTH_URL_REFRESH_TOKEN || "",
+            method: "POST",
+            body: { refreshToken },
           },
           api,
-          extraOptions,
+          extraOptions
         );
         if (refreshResult.data) {
           api.dispatch({
@@ -67,7 +67,7 @@ const baseQueryWithReauth: BaseQueryFn<
           // retry the initial query
           result = await baseQuery(args, api, extraOptions);
         } else {
-          api.dispatch({type: AUTH_ACTION.EXPIRED});
+          api.dispatch({ type: AUTH_ACTION.EXPIRED });
         }
       } finally {
         // release must be called once the mutex should be released again.
@@ -86,22 +86,22 @@ const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
-  tagTypes: JSON.parse(process.env.TAG_TYPES || '[]'),
+  tagTypes: JSON.parse(process.env.TAG_TYPES || "[]"),
 });
 
 // Hàm `getBaseApi` nhận vào `builder` và định nghĩa một endpoint `query`
 export const getBaseApi = <TParams extends Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.query>>,
+  partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.query<any, TParams>({
     query: (params: TParams) => ({
       url,
-      method: 'GET',
-      ...(params ? {params} : {}),
+      method: "GET",
+      ...(params ? { params } : {}),
     }),
-    transformResponse: (response: {data: any}, meta, arg) => response.data,
+    transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
   });
 
@@ -114,16 +114,16 @@ interface MutationParams<TBody, TParams = Record<string, any>> {
 export const postBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.mutation>>,
+  partial?: Partial<ReturnType<typeof builder.mutation>>
 ) =>
   builder.mutation<TBody, MutationParams<TBody, TParams>>({
-    query: ({body, params}: MutationParams<TBody, TParams>) => ({
+    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
       url,
-      method: 'POST',
+      method: "POST",
       body,
       params,
     }),
-    transformResponse: (response: {data: any}, meta, arg) => response.data,
+    transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
   });
 
@@ -131,16 +131,16 @@ export const postBaseApi = <TBody, TParams = Record<string, any>>(
 export const putBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.query>>,
+  partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.mutation<any, MutationParams<TBody, TParams>>({
-    query: ({body, params}: MutationParams<TBody, TParams>) => ({
+    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
       url,
-      method: 'PUT',
+      method: "PUT",
       body,
       params,
     }),
-    transformResponse: (response: {data: any}, meta, arg) => response.data,
+    transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
   });
 
@@ -148,36 +148,36 @@ export const putBaseApi = <TBody, TParams = Record<string, any>>(
 export const patchBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.query>>,
+  partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.mutation<any, MutationParams<TBody, TParams>>({
-    query: ({body, params}: MutationParams<TBody, TParams>) => ({
+    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
       url,
-      method: 'PATCH',
+      method: "PATCH",
       body,
       params,
     }),
-    transformResponse: (response: {data: any}, meta, arg) => response.data,
+    transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
   });
 
 interface DeleteParams {
-  params: {id: string} | Record<string, any>; // `params` là một đối tượng tùy chọn
+  params: { id: string } | Record<string, any>; // `params` là một đối tượng tùy chọn
 }
 
 // Hàm `patchBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
 export const deleteBaseApi = (
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.query>>,
+  partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.mutation<any, DeleteParams>({
-    query: ({params}: DeleteParams) => ({
+    query: ({ params }: DeleteParams) => ({
       url,
-      method: 'DELETE',
+      method: "DELETE",
       params,
     }),
-    transformResponse: (response: {data: any}, meta, arg) => response.data,
+    transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
   });
 
@@ -185,7 +185,7 @@ export const createEndpoints = (
   url: string,
   slide: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.query>>,
+  partial?: Partial<ReturnType<typeof builder.query>>
 ) => ({
   [`get${slide}`]: getBaseApi(url, builder, partial),
   [`post${slide}`]: postBaseApi(url, builder, partial),

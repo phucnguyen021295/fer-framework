@@ -12,22 +12,16 @@ interface Props {
   };
 }
 
-export const initI18n = (props: Props) => {
-  const { lng = "vi", resources } = props;
-  i18n
-    .use(LanguageDetector) // Phát hiện ngôn ngữ của user
-    .use(initReactI18next) // Kết nối với React
-    .init({
-      lng: lng,
-      fallbackLng: lng,
-      debug: true,
-      resources,
-      interpolation: {
-        escapeValue: false, // Không cần escape khi dùng HTML
-      },
-    });
-
-  return i18n;
-};
+i18n
+  .use(LanguageDetector) // Phát hiện ngôn ngữ của user
+  .use(initReactI18next) // Kết nối với React
+  .init({
+    lng: "vi",
+    fallbackLng: "vi",
+    debug: true,
+    interpolation: {
+      escapeValue: false, // Không cần escape khi dùng HTML
+    },
+  });
 
 export default i18n;
