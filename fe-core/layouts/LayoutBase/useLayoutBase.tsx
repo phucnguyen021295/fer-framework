@@ -7,12 +7,14 @@ function useLayoutBase() {
   const collapsedSider = useSelector(appSelector.getCollapsedSider);
   const showFooter = useSelector(appSelector.getShowFooter);
   const isMobile = useSelector(appSelector.getIsMobile);
+  const pageTab = useSelector(appSelector.getPageTab);
 
   return {
     layoutMode,
     collapsedSider,
     showFooter,
     isMobile,
+    ...pageTab,
   };
 }
 

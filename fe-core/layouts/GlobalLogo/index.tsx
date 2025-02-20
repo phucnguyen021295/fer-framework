@@ -1,3 +1,4 @@
+"use client";
 import { FC, memo, useMemo } from "react";
 import Image from "next/image";
 import Link, { LinkProps } from "next/link";
@@ -10,15 +11,15 @@ const { Title } = Typography;
 
 interface Props extends LinkProps {
   /** Whether to show the title */
-  isTitle?: boolean;
   href?: string;
+  style: unknown;
 }
 
 const GlobalLogo: FC<Props> = (props: Props) => {
   const { title, showTitle, showLogo, logo, logoCompact, heightLogo } =
     useSelector(appSelector.getHeaderConfig);
   const { collapsedSider, layoutMode, isMobile } = useLayoutBase();
-  const { isTitle = true, href = "/", style, ...otherProps } = props;
+  const { href = "/", style, ...otherProps } = props;
 
   const isCollap = useMemo(() => {
     if (layoutMode === "vertical" && collapsedSider && !isMobile) {
@@ -59,7 +60,7 @@ const GlobalLogo: FC<Props> = (props: Props) => {
         />
       )}
 
-      {showTitle && isTitle && (
+      {showTitle ? (
         <Title
           level={2}
           ellipsis={true}
@@ -67,7 +68,7 @@ const GlobalLogo: FC<Props> = (props: Props) => {
         >
           {title}
         </Title>
-      )}
+      ) : null}
     </Link>
   );
 };

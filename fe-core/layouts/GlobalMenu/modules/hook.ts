@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 // Selectors
-import { appSelector } from '@/fe-core/reducers/app';
+import { appSelector } from "@/fer-framework/fe-core/reducers/app";
 
 export function useGetElementById(id: string) {
   const [container, setContainers] = useState<HTMLElement | null>();

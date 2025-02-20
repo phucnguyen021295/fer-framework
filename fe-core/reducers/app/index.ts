@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { MenuItem, ThemeLayoutMode } from "../constants";
+import { MenuItem, ThemeLayoutMode } from "../../constants";
 import { merge } from "lodash";
+import { Route } from "next/dist/types";
 
 // Define a type for the slice state
 export interface APP_STATE {
@@ -28,11 +29,16 @@ export interface APP_STATE {
     showMenu: boolean;
     items: MenuItem[];
   };
+  pageTab: {
+    pageTabHeight: number;
+    isPageTab: boolean;
+  };
   footer: {
     showFooter: boolean;
   };
   isMobile: boolean;
   theme: "light" | "dark";
+  rootRoute: Route;
 }
 
 // Define the initial state using that type
@@ -60,11 +66,16 @@ const initialState: APP_STATE = {
     showMenu: true,
     items: [],
   },
+  pageTab: {
+    pageTabHeight: 48,
+    isPageTab: false,
+  },
   footer: {
     showFooter: false,
   },
   isMobile: false,
   theme: "light",
+  rootRoute: "/home",
 };
 
 export const appSlice = createSlice({
@@ -135,6 +146,10 @@ export const appSlice = createSlice({
     getTheme: (state) => state.theme,
 
     getDarkModeSider: (state) => state.sider.darkMode,
+
+    getRootRoute: (state) => state.rootRoute,
+
+    getPageTab: (state) => state.pageTab,
   },
 });
 

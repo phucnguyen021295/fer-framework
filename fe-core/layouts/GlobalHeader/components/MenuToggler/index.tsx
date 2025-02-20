@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import Image from "next/image";
 
-import { appSelector, setCollapsedSider } from "@/fe-core/reducers/app";
+import {
+  appSelector,
+  setCollapsedSider,
+} from "@/fer-framework/fe-core/reducers/app";
 // import GlobalMenu from "../../../GlobalMenu";
 import { GLOBAL_SIDER_MENU_ID } from "@/fer-framework/fe-core/constants";
 import { createStyles } from "antd-style";

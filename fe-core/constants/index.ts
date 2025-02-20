@@ -33,12 +33,12 @@ export interface MenuItem {
   key: string;
   label: React.ReactNode;
   icon?: React.ReactNode;
-  link?: string;
+  link: string;
   children?: MenuItem[];
-};
+}
 
 export const GLOBAL_HEADER_MENU_ID = "__GLOBAL_HEADER_MENU__";
 
 export const GLOBAL_SIDER_MENU_ID = "__GLOBAL_SIDER_MENU__";
 
-
+export const GLOBAL_PAGE_TAB_ID = "GLOBAL_PAGE_TAB_ID";

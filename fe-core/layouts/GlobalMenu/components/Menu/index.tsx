@@ -73,6 +73,27 @@ const mapMenuItems = (items) => {
   });
 };
 
+const getLevelKeys = (items1: LevelKeysProps[]) => {
+  const key: Record<string, number> = {};
+  const func = (items2: LevelKeysProps[], level = 1) => {
+    items2.forEach((item) => {
+      if (item.key) {
+        key[item.key] = level;
+      }
+      if (item.children) {
+        func(item.children, level + 1);
+      }
+    });
+  };
+  func(items1);
+  return key;
+};
+
+interface LevelKeysProps {
+  key?: string;
+  children?: LevelKeysProps[];
+}
+
 const MenuBase: React.FC<Props> = (props: Props) => {
   const path = usePathname();
   const { mode = "inline" } = props;
@@ -81,6 +102,12 @@ const MenuBase: React.FC<Props> = (props: Props) => {
   const { isMobile, collapsedSider } = useLayoutBase();
   const darkMode = useSelector(appSelector.getDarkModeSider);
   const [current, setCurrent] = useState(path);
+  const [stateOpenKeys, setStateOpenKeys] = useState([]);
+
+  useEffect(() => {
+    setCurrent(path);
+    setStateOpenKeys(getDefaultOpenKeys(path));
+  }, [path]);
 
   const getDefaultOpenKeys = (path) => {
     const openKeys = [];
@@ -101,6 +128,35 @@ const MenuBase: React.FC<Props> = (props: Props) => {
     setCurrent(e.key);
   };
 
+  const setOpenKeys = (openKeys) => {
+    const levelKeys = getLevelKeys(items as LevelKeysProps[]);
+
+    const currentOpenKey = openKeys.find(
+      (key) => stateOpenKeys.indexOf(key) === -1
+    );
+    // open
+    if (currentOpenKey !== undefined) {
+      const repeatIndex = openKeys
+        .filter((key) => key !== currentOpenKey)
+        .findIndex((key) => levelKeys[key] === levelKeys[currentOpenKey]);
+
+      setStateOpenKeys(
+        openKeys
+          // remove repeat key
+          .filter((_, index) => index !== repeatIndex)
+          // remove current level all child
+          .filter((key) => levelKeys[key] <= levelKeys[currentOpenKey])
+      );
+    } else {
+      // close
+      setStateOpenKeys(openKeys);
+    }
+  };
+
+  const onOpenChange: MenuProps["onOpenChange"] = (openKeys) => {
+    setOpenKeys(openKeys);
+  };
+
   // Trường hợp mobile thì luôn hiển thị thông tin chi tiết menu
   const _inlineCollapsed = useMemo(() => {
     if (isMobile) {
@@ -114,9 +170,11 @@ const MenuBase: React.FC<Props> = (props: Props) => {
       theme={darkMode && mode === "inline" ? "dark" : theme}
       onClick={onClick}
       selectedKeys={[current]}
-      style={{ height: "100%" }}
       defaultSelectedKeys={[current]}
+      style={{ height: "100%" }}
       defaultOpenKeys={getDefaultOpenKeys(path)}
+      openKeys={stateOpenKeys}
+      onOpenChange={onOpenChange}
       mode={mode}
       inlineCollapsed={_inlineCollapsed}
     >

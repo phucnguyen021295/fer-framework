@@ -22,9 +22,8 @@ const useResponsivePadding = () => {
     } else if (xl && !xxl) {
       setPadding(token.padding);
     } else {
-      setPadding(token.paddingLG);
+      setPadding(token.padding);
     }
-
   }, [xs, sm, md, lg, xl]);
 
   return padding;

@@ -3,7 +3,7 @@ configResponsive({ xs: 0, sm: 576, md: 768, lg: 992, xl: 1200, xxl: 1600 });
 
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Layout, theme } from "antd";
+import { Layout } from "antd";
 import { configResponsive, useResponsive } from "ahooks";
 
 import GlobalHeader from "../GlobalHeader";
@@ -20,6 +20,7 @@ import {
 
 // Constants
 import {
+  GLOBAL_PAGE_TAB_ID,
   LAYOUT_MODE_HORIZONTAL,
   LAYOUT_MODE_VERTICAL,
   LAYOUT_MODE_VERTICAL_MIX,
@@ -27,6 +28,9 @@ import {
 } from "../../constants";
 import GlobalMenu from "../GlobalMenu";
 import { useTheme } from "@/fe-global/themes/ThemeProvider";
+import { createStyles } from "antd-style";
+import GlobalTab from "../GlobalTab";
+import useResponsivePadding from "../../hooks/useResponsivePadding";
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -34,6 +38,7 @@ interface Props {
   children: React.ReactNode;
   layoutMode: ThemeLayoutMode; // Loai hiển thị layout
   headerHeight?: number; // Chiều cao header
+  isPageTab?: boolean;
   widthSider?: number;
   collapsedSider: boolean;
   showFooter?: boolean; // Trạng thái ẩn hiện footer
@@ -49,12 +54,15 @@ export default function LayoutBase(props: Props) {
     collapsedSider,
     showFooter,
     FooterComponent,
+    isPageTab,
   } = props;
+  const padding = useResponsivePadding();
+  const { styles, theme } = useStyles();
   const dispatch = useDispatch();
   const { mode } = useTheme();
-  const {
-    token: { headerBg },
-  } = theme.useToken();
+  // const {
+  //   token: { headerBg },
+  // } = theme.useToken();
   const { md, lg, xl } = useResponsive();
   const darkModeSider = useSelector(appSelector.getDarkModeSider);
   const isMobile = !md;
@@ -101,7 +109,13 @@ export default function LayoutBase(props: Props) {
 
   const HeaderLayout = useMemo(() => {
     return (
-      <Header style={{ backgroundColor: headerBg, padding: 0 }}>
+      <Header
+        style={{
+          backgroundColor: theme.headerBg,
+          padding: 0,
+          borderBottom: `1px solid ${theme.colorBorderSecondary}`,
+        }}
+      >
         <GlobalHeader
           mode={layoutMode}
           isMobile={isMobile}
@@ -109,7 +123,7 @@ export default function LayoutBase(props: Props) {
         />
       </Header>
     );
-  }, [layoutMode, isMobile, widthSider, headerBg]);
+  }, [layoutMode, isMobile, widthSider, theme]);
 
   const SiderLayout = useMemo(() => {
     if (!showSider) return null;
@@ -118,7 +132,7 @@ export default function LayoutBase(props: Props) {
       <Sider
         theme={darkModeSider ? "dark" : mode} // Ưu tiên loại darkmode xong mới đến theme
         width={widthSider}
-        style={siderStyle}
+        className={styles.sider}
         collapsed={collapsedSider}
         collapsible
         collapsedWidth={isMobile ? 0 : 80}
@@ -134,11 +148,27 @@ export default function LayoutBase(props: Props) {
   }, [collapsedSider, showSider, layoutMode, mode, isMobile, darkModeSider]);
 
   return (
-    <Layout style={layoutStyle}>
+    <Layout className={styles.container}>
       {invertedSider ? SiderLayout : HeaderLayout}
-      <Layout style={{ marginTop: invertedSider ? 0 : 2 }}>
+      <Layout
+        style={{
+          borderInlineEnd: `${invertedSider ? 0 : 1}px solid ${
+            theme.colorBorderSecondary
+          }`,
+        }}
+      >
         {invertedSider ? HeaderLayout : SiderLayout}
-        <Content style={contentStyle}>{children}</Content>
+        <Content
+          id={GLOBAL_PAGE_TAB_ID}
+          className={styles.content}
+          style={{
+            minHeight: `calc(100vh - ${headerHeight}px)`,
+            backgroundColor: theme.colorBgLayout,
+          }}
+        >
+          {isPageTab && <GlobalTab isMobile={isMobile} />}
+          {children}
+        </Content>
         {/* Hiển thị Footer */}
         {showFooter && <Footer>{FooterComponent}</Footer>}
       </Layout>
@@ -147,17 +177,27 @@ export default function LayoutBase(props: Props) {
   );
 }
 
-const contentStyle: React.CSSProperties = {
-  minHeight: 120,
-  lineHeight: "120px",
-};
+const useStyles = createStyles(({ token, css }) => ({
+  container: css`
+    border-radius: 8;
+    overflow: "hidden";
+    height: "100vh";
+  `,
 
-const siderStyle: React.CSSProperties = {
-  lineHeight: "120px",
-};
+  sider: css`
+    line-height: "120px";
+    border-inline-end: 1px solid ${token.colorBorderSecondary};
+    & .ant-menu-light.ant-menu-root.ant-menu-inline,
+    & .ant-menu-light.ant-menu-root.ant-menu-vertical {
+      border-inline-end: 0;
+    }
+    & .ant-layout-sider-trigger {
+      border-inline-end: 1px solid ${token.colorBorderSecondary};
+    }
+  `,
 
-const layoutStyle = {
-  borderRadius: 8,
-  overflow: "hidden",
-  height: "100vh",
-};
+  content: css`
+    /* min-height: 120%; */
+    /* line-height: "120px"; */
+  `,
+}));

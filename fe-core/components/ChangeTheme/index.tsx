@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { SunFilled, MoonFilled } from "@ant-design/icons";
 
 import { useTheme } from "@/fe-global/themes/ThemeProvider";
@@ -7,11 +7,13 @@ import { useTheme } from "@/fe-global/themes/ThemeProvider";
 const ChangeTheme: React.FC = () => {
   const { mode, toggleTheme } = useTheme();
   return (
-    <Button
-      type="text"
-      icon={mode === "dark" ? <SunFilled /> : <MoonFilled />}
-      onClick={() => toggleTheme(mode === "dark" ? "light" : "dark")}
-    />
+    <Tooltip title={mode === "dark" ? "Sáng" : "Tối"}>
+      <Button
+        type="text"
+        icon={mode === "dark" ? <SunFilled /> : <MoonFilled />}
+        onClick={() => toggleTheme(mode === "dark" ? "light" : "dark")}
+      />
+    </Tooltip>
   );
 };
 
