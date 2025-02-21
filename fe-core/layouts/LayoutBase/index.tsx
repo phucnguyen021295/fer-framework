@@ -24,6 +24,7 @@ import {
   LAYOUT_MODE_HORIZONTAL,
   LAYOUT_MODE_VERTICAL,
   LAYOUT_MODE_VERTICAL_MIX,
+  PAGE_TAB_HEIGHT,
   ThemeLayoutMode,
 } from "../../constants";
 import GlobalMenu from "../GlobalMenu";
@@ -38,7 +39,7 @@ interface Props {
   children: React.ReactNode;
   layoutMode: ThemeLayoutMode; // Loai hiển thị layout
   headerHeight?: number; // Chiều cao header
-  isPageTab?: boolean;
+  isPageTab: boolean;
   widthSider?: number;
   collapsedSider: boolean;
   showFooter?: boolean; // Trạng thái ẩn hiện footer
@@ -147,6 +148,14 @@ export default function LayoutBase(props: Props) {
     );
   }, [collapsedSider, showSider, layoutMode, mode, isMobile, darkModeSider]);
 
+  const _heightHeader = useMemo(() => {
+    if (isPageTab) {
+      return headerHeight + PAGE_TAB_HEIGHT;
+    }
+
+    return headerHeight;
+  }, [isPageTab]);
+
   return (
     <Layout className={styles.container}>
       {invertedSider ? SiderLayout : HeaderLayout}
@@ -158,17 +167,22 @@ export default function LayoutBase(props: Props) {
         }}
       >
         {invertedSider ? HeaderLayout : SiderLayout}
-        <Content
-          id={GLOBAL_PAGE_TAB_ID}
-          className={styles.content}
-          style={{
-            minHeight: `calc(100vh - ${headerHeight}px)`,
-            backgroundColor: theme.colorBgLayout,
-          }}
-        >
+        <Layout id={GLOBAL_PAGE_TAB_ID}>
           {isPageTab && <GlobalTab isMobile={isMobile} />}
-          {children}
-        </Content>
+          <Content
+            className={styles.content}
+            style={{
+              height: `calc(100vh - ${_heightHeader}px)`,
+              backgroundColor: theme.colorBgLayout,
+              overflowY: "auto",
+              overflowX: "hidden",
+              minHeight: `calc(100vh - ${_heightHeader}px)`,
+            }}
+          >
+            {children}
+          </Content>
+        </Layout>
+
         {/* Hiển thị Footer */}
         {showFooter && <Footer>{FooterComponent}</Footer>}
       </Layout>
@@ -179,13 +193,11 @@ export default function LayoutBase(props: Props) {
 
 const useStyles = createStyles(({ token, css }) => ({
   container: css`
-    border-radius: 8;
     overflow: "hidden";
     height: "100vh";
   `,
 
   sider: css`
-    line-height: "120px";
     border-inline-end: 1px solid ${token.colorBorderSecondary};
     & .ant-menu-light.ant-menu-root.ant-menu-inline,
     & .ant-menu-light.ant-menu-root.ant-menu-vertical {

@@ -42,3 +42,9 @@ export const GLOBAL_HEADER_MENU_ID = "__GLOBAL_HEADER_MENU__";
 export const GLOBAL_SIDER_MENU_ID = "__GLOBAL_SIDER_MENU__";
 
 export const GLOBAL_PAGE_TAB_ID = "GLOBAL_PAGE_TAB_ID";
+
+export const LOGO_HEIGHT = 32;
+export const HEADER_HEIGHT = 64;
+export const PAGE_TAB_HEIGHT = 44;
+export const SIDER_WIDTH = 280;
+export const SIDER_COLLAPSED_WIDTH = 80;

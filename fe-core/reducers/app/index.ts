@@ -1,6 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { MenuItem, ThemeLayoutMode } from "../../constants";
+import {
+  HEADER_HEIGHT,
+  LOGO_HEIGHT,
+  MenuItem,
+  PAGE_TAB_HEIGHT,
+  SIDER_COLLAPSED_WIDTH,
+  SIDER_WIDTH,
+  ThemeLayoutMode,
+} from "../../constants";
 import { merge } from "lodash";
 import { Route } from "next/dist/types";
 
@@ -30,7 +38,6 @@ export interface APP_STATE {
     items: MenuItem[];
   };
   pageTab: {
-    pageTabHeight: number;
     isPageTab: boolean;
   };
   footer: {
@@ -45,20 +52,20 @@ export interface APP_STATE {
 const initialState: APP_STATE = {
   layoutMode: "vertical-mix",
   header: {
-    title: "TNTECH",
+    title: "AUTIC",
     showTitle: false,
     showLogo: true,
     logo: "",
     logoCompact: "",
-    heightLogo: 32,
-    headerHeight: 64,
+    heightLogo: LOGO_HEIGHT,
+    headerHeight: HEADER_HEIGHT,
   },
   sider: {
     showSider: true,
     inverted: false,
     collapsedSider: false,
-    collapsedWidth: 80,
-    width: 280,
+    collapsedWidth: SIDER_COLLAPSED_WIDTH,
+    width: SIDER_WIDTH,
     darkMode: false,
   },
   memu: {
@@ -67,7 +74,6 @@ const initialState: APP_STATE = {
     items: [],
   },
   pageTab: {
-    pageTabHeight: 48,
     isPageTab: false,
   },
   footer: {

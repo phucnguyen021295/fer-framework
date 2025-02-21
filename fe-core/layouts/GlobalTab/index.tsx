@@ -13,7 +13,7 @@ import {
 } from "../../reducers/tab";
 import { useFullscreen } from "ahooks";
 import FullScreen from "../../components/FullScreen";
-import { GLOBAL_PAGE_TAB_ID } from "../../constants";
+import { GLOBAL_PAGE_TAB_ID, PAGE_TAB_HEIGHT } from "../../constants";
 import ReloadPage from "../../components/ReloadPage";
 
 interface Props {
@@ -58,17 +58,19 @@ const GlobalTab: React.FC<Props> = (props: Props) => {
       style={{ paddingInline: padding }}
       justify="space-between"
     >
-      <Tabs
-        hideAdd
-        size="small"
-        type="editable-card"
-        onChange={onChange}
-        className={styles.tabs}
-        activeKey={activeTabId}
-        onEdit={onEdit}
-        items={items}
-      />
-      <Flex gap={8}>
+      <Flex align="flex-end">
+        <Tabs
+          hideAdd
+          size="small"
+          type="editable-card"
+          onChange={onChange}
+          className={styles.tabs}
+          activeKey={activeTabId}
+          onEdit={onEdit}
+          items={items}
+        />
+      </Flex>
+      <Flex gap={8} align="center">
         <ReloadPage handClick={() => route.refresh()} />
         {!isMobile && (
           <FullScreen full={isFullscreen} toggleFullscreen={toggleFullscreen} />
@@ -84,8 +86,8 @@ const useStyles = createStyles(({ token, css }) => ({
   container: css`
     background-color: ${token.colorBgContainer};
     border-bottom: 1px solid ${token.colorBorderSecondary};
-    padding-top: 11px;
     padding-inline: 12px;
+    height: ${PAGE_TAB_HEIGHT}px;
   `,
 
   tabs: css`
