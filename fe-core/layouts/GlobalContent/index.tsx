@@ -12,7 +12,7 @@ const GlobalContent: FC<Props> = (props: Props) => {
   const { children } = props;
 
   return (
-    <Flex gap={padding} style={{ padding: padding }} vertical>
+    <Flex gap={padding} vertical>
       {children}
     </Flex>
   );

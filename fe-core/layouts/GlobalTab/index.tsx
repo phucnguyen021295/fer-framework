@@ -29,9 +29,10 @@ const GlobalTab: React.FC<Props> = (props: Props) => {
   const { isMobile } = props;
   const activeTabId = useSelector(tabSelectors.getActiveTabId);
   const items = useSelector(selectAllTabs);
-  const [isFullscreen, { toggleFullscreen }] = useFullscreen(
+  const [isFullscreen, { toggleFullscreen }] = useFullscreen(() =>
     document.getElementById(GLOBAL_PAGE_TAB_ID)
   );
+  console.log("GLOBAL_PAGE_TAB_ID", isFullscreen);
 
   useEffect(() => {
     dispatch(initTabStore());
