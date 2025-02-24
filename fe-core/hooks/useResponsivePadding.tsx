@@ -1,3 +1,4 @@
+"use cleint";
 import { useState, useEffect } from "react";
 import { useResponsive } from "ahooks";
 import { useTheme } from "antd-style";

@@ -1,5 +1,4 @@
 "use client";
-import { FC, memo, useMemo } from "react";
 import { Flex } from "antd";
 import useResponsivePadding from "@/fe-core/hooks/useResponsivePadding";
 
@@ -12,7 +11,7 @@ const GlobalContent: FC<Props> = (props: Props) => {
   const { children } = props;
 
   return (
-    <Flex gap={padding} vertical>
+    <Flex gap={padding} vertical style={{ flex: 1 }}>
       {children}
     </Flex>
   );
