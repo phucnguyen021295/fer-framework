@@ -109,34 +109,42 @@ export default tabSlice.reducer;
 
 const getMenuItemsByPaths = (
   tabs: Route[],
-  menuItems: MenuItem,
+  menuItems: MenuItem[],
   rootTab: Route
 ) => {
-  const result = [];
+  // Tạo một map để lưu trữ và tìm kiếm menu items nhanh hơn
+  const menuMap = new Map();
 
-  // Hàm đệ quy để tìm kiếm menu item phù hợp
-  const findMenuItem = (items, paths) => {
+  // Hàm đệ quy để build menu map
+  const buildMenuMap = (items: MenuItem[]) => {
     items.forEach((item) => {
-      if (paths.includes(item.key)) {
-        // Thêm item vào kết quả nếu key của nó nằm trong paths
-        result.push({
-          key: item.key,
-          label: item.label,
-          icon: item.icon,
-          link: item.link,
-          closable: !(rootTab === item.key),
-        });
-      }
+      menuMap.set(item.key, {
+        key: item.key,
+        label: item.label,
+        icon: item.icon,
+        link: item.link,
+      });
 
-      // Nếu item có children, tiếp tục tìm kiếm đệ quy
       if (item.children && item.children.length > 0) {
-        findMenuItem(item.children, paths);
+        buildMenuMap(item.children);
       }
     });
   };
 
-  findMenuItem(menuItems, tabs);
-  return result;
+  // Build menu map từ menuItems
+  buildMenuMap(menuItems);
+
+  // Map tabs theo thứ tự, chỉ lấy những tab có trong menu
+  return tabs.reduce((result: any[], tab) => {
+    const menuItem = menuMap.get(tab);
+    if (menuItem) {
+      result.push({
+        ...menuItem,
+        closable: !(rootTab === menuItem.key),
+      });
+    }
+    return result;
+  }, []);
 };
 
 export const selectAllTabs = createSelector(
@@ -217,9 +225,6 @@ export const addTabByRoute =
 
     if (active) {
       dispatch(tabActions.setActiveTabId(route));
-
-      // const firstLevelRouteName = getActiveFirstLevelMenuKey(route);
-      // dispatch(setActiveFirstLevelMenuKey(firstLevelRouteName));
     }
   };
 
