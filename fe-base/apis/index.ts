@@ -52,7 +52,7 @@ const baseQueryWithReauth: BaseQueryFn<
         const refreshToken = getRefreshToken(api.getState());
         const refreshResult = await baseQuery(
           {
-            url: process.env?.AUTH_URL_REFRESH_TOKEN || "",
+            url: process.env?.URL_API?.AUTH?.AUTH_URL_REFRESH_TOKEN || "",
             method: "POST",
             body: { refreshToken },
           },
@@ -125,6 +125,8 @@ export const postBaseApi = <TBody, TParams = Record<string, any>>(
     }),
     transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
+    transformErrorResponse: (baseQueryReturnValue, meta, arg) =>
+      baseQueryReturnValue.data,
   });
 
 // Hàm `putBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`

@@ -5,7 +5,12 @@ import { Dropdown, Flex, Typography } from "antd";
 import Image from "next/image";
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { DownOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  KeyOutlined,
+  LogoutOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { authSelectors } from "@/fe-module-auth/reducers";
 import { useResponsive } from "ahooks";
@@ -13,17 +18,20 @@ import { useResponsive } from "ahooks";
 const { Text } = Typography;
 
 const items: MenuProps["items"] = [
-  // {
-  //     key: "1",
-  //     label: "Cấu hình chung",
-  // },
+  {
+    key: "1",
+    label: "Thông tin cá nhân",
+    icon: <UserOutlined />,
+  },
   {
     key: "2",
     label: "Đổi mật khẩu",
+    icon: <KeyOutlined />,
   },
   {
     key: "3",
     label: "Đăng xuất",
+    icon: <LogoutOutlined />,
   },
 ];
 
