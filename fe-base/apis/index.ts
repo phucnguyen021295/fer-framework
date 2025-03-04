@@ -12,7 +12,7 @@ import {
   getToken,
   getRefreshToken,
   getOrganizationCode,
-} from "@/fe-base/utils/getToken";
+} from "../utils/getToken";
 import { AUTH_ACTION } from "../actions";
 
 const mutex = new Mutex();
@@ -27,7 +27,7 @@ const baseQuery = fetchBaseQuery({
       headers.set("Authorization", `Bearer ${token}`);
     }
     if (!!organizationCode) {
-      headers.set("organizationCode", organizationCode);
+      headers.set("organizationCode", `${organizationCode}`);
     }
     return headers;
   },
@@ -41,18 +41,20 @@ const baseQueryWithReauth: BaseQueryFn<
   // wait until the mutex is available without locking it
   await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
-  if (
-    result.error &&
-    (result.error.status === 401 || result.error?.originalStatus === 401)
-  ) {
+  if (result.error && result.error.status === 401) {
     // checking whether the mutex is locked
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       try {
         const refreshToken = getRefreshToken(api.getState());
+        const urlApi =
+          typeof process.env.URL_API === "string"
+            ? JSON.parse(process.env.URL_API)
+            : {};
+        const refreshTokenUrl = urlApi?.AUTH?.AUTH_URL_REFRESH_TOKEN || "";
         const refreshResult = await baseQuery(
           {
-            url: process.env?.AUTH_URL_REFRESH_TOKEN || "",
+            url: refreshTokenUrl,
             method: "POST",
             body: { refreshToken },
           },
@@ -114,7 +116,7 @@ interface MutationParams<TBody, TParams = Record<string, any>> {
 export const postBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.mutation>>
+  partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.mutation<TBody, MutationParams<TBody, TParams>>({
     query: ({ body, params }: MutationParams<TBody, TParams>) => ({
@@ -125,6 +127,8 @@ export const postBaseApi = <TBody, TParams = Record<string, any>>(
     }),
     transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
+    transformErrorResponse: (baseQueryReturnValue: any, meta, arg) =>
+      baseQueryReturnValue.data,
   });
 
 // Hàm `putBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`

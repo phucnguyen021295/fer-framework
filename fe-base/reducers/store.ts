@@ -4,7 +4,7 @@ import {
   type ThunkAction,
   type Action,
   type Reducer,
-  type Middleware
+  type Middleware,
 } from "@reduxjs/toolkit";
 import {
   useSelector as useReduxSelector,
@@ -12,12 +12,13 @@ import {
   type TypedUseSelectorHook,
 } from "react-redux";
 
-export const store = (reducer: Reducer, middleware: Middleware) => configureStore({
-  reducer,
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(middleware);
-  },
-});
+export const store: any = (reducer: Reducer, middleware: Middleware) =>
+  configureStore({
+    reducer,
+    middleware: (getDefaultMiddleware) => {
+      return getDefaultMiddleware().concat(middleware);
+    },
+  });
 
 export const useDispatch = () => useReduxDispatch<ReduxDispatch>();
 export const useSelector: TypedUseSelectorHook<ReduxState> = useReduxSelector;

@@ -1,6 +1,7 @@
 "use client";
 
 /* Core */
+import React from "react";
 import { Provider } from "react-redux";
 
 /* Instruments */

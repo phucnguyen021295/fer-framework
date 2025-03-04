@@ -1,10 +1,11 @@
 /* Instruments */
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 // Base APi
-import { baseApi } from "@/fe-base/apis";
+import { baseApi } from "../apis";
 
-export const createReducer = (_reducer: any) => combineReducers({
-  [baseApi.reducerPath]: baseApi.reducer,
-  ..._reducer
-});
+export const createReducer = (_reducer: any) =>
+  combineReducers({
+    [baseApi.reducerPath]: baseApi.reducer,
+    ..._reducer,
+  });
