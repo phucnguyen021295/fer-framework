@@ -7,7 +7,7 @@ export const authApi = baseApi.injectEndpoints({
       { rememberMe: boolean }
     >(process.env.URL_API.AUTH.POST_LOGIN, builder),
 
-    getMeAuth: getBaseApi<{}>(process.env.URL_API.AUTH.GET_ME, builder),
+    getMeAuth: getBaseApi(process.env.URL_API.AUTH.GET_ME, builder),
   }),
 });
 
