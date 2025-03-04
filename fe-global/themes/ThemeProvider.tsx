@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect, useLayoutEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import {
   ConfigProvider,
   ConfigProviderProps,
@@ -40,11 +46,10 @@ interface Props extends ConfigProviderProps {
 
 const ThemeProvider = (props: Props) => {
   const { children, defaultTheme, theme = {}, ...otherProps } = props;
-  const [mode, setMode] = useState();
+  const [mode, setMode] = useState("");
   const {
     token: { colorBgContainer, headerBg },
-  } = themConfig.useToken();
-  
+  }: { token: any } = themConfig.useToken();
 
   // // Thiết lập trạng thái theme ban đầu từ localStorage nếu có
   useLayoutEffect(() => {
@@ -71,7 +76,10 @@ const ThemeProvider = (props: Props) => {
 
   const _themeConfig = merge(
     {
-      algorithm: mode === "dark" ? themConfig.darkAlgorithm : themConfig.defaultAlgorithm,
+      algorithm:
+        mode === "dark"
+          ? themConfig.darkAlgorithm
+          : themConfig.defaultAlgorithm,
       token: {
         headerBg: mode === "dark" ? headerBg : colorBgContainer,
       },
@@ -79,8 +87,8 @@ const ThemeProvider = (props: Props) => {
     theme
   );
 
-  if(!mode) {
-    return null
+  if (!mode) {
+    return null;
   }
 
   return (

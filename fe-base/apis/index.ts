@@ -116,7 +116,7 @@ interface MutationParams<TBody, TParams = Record<string, any>> {
 export const postBaseApi = <TBody, TParams = Record<string, any>>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
-  partial?: Partial<ReturnType<typeof builder.query>>
+  partial?: Partial<ReturnType<typeof builder.mutation>>
 ) =>
   builder.mutation<TBody, MutationParams<TBody, TParams>>({
     query: ({ body, params }: MutationParams<TBody, TParams>) => ({
@@ -192,7 +192,7 @@ export const createEndpoints = (
   partial?: Partial<ReturnType<typeof builder.query>>
 ) => ({
   [`get${slide}`]: getBaseApi(url, builder, partial),
-  [`post${slide}`]: postBaseApi(url, builder, partial),
+  [`post${slide}`]: postBaseApi(url, builder),
   [`put${slide}`]: putBaseApi(url, builder, partial),
   [`patch${slide}`]: patchBaseApi(url, builder, partial),
   [`delete${slide}`]: deleteBaseApi(url, builder, partial),

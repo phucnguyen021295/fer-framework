@@ -17,7 +17,7 @@ import {
 import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 import { createStyles } from "antd-style";
 import { useSize } from "ahooks";
-import { useMobile } from "@/fe-core/common/mobile";
+import { useMobile } from "@/fer-framework/fe-cores/common/mobile";
 import SortPopover from "./SortPopover";
 
 const { Text } = Typography;

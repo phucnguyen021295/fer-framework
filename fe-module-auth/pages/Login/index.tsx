@@ -1,17 +1,22 @@
 "use client";
 
+import React from "react";
 import { Flex, Layout } from "antd";
 import Image from "next/image";
 import { createStyles } from "antd-style";
-import FormLogin from "@/fe-module-auth/components/FormLogin";
+import FormLogin from "../../components/FormLogin";
 
 import { useSelector } from "react-redux";
-import { appSelector } from "@/fe-core/reducers/app";
+import { appSelector } from "fe-cores/reducers";
 import { configLogin } from "./config";
 
 const { Content } = Layout;
 
-export default function Login(props) {
+interface Props {
+  config: any;
+}
+
+export default function Login(props: Props) {
   const { styles, cx, theme } = useStyles();
   const { config = configLogin } = props;
   const { logo } = useSelector(appSelector.getHeaderConfig);
