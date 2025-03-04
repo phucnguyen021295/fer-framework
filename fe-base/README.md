@@ -1,4 +1,4 @@
-# FE-BASE Library
+# FE-BASE Library install react, react-native
 
 ## Installation
 

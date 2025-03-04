@@ -1,0 +1,33 @@
+{
+  "name": "fe-global",
+  "version": "1.0.1",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./assets": {
+      "require": "./assets/index.js",
+      "import": "./assets/index.js",
+      "types": "./assets/index.d.ts"
+    },
+    "./language": {
+      "require": "./language/index.js",
+      "import": "./language/index.js",
+      "types": "./language/index.d.ts"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf lib",
+    "build": "npm run clean && tsc",
+    "prepare-lib": "node prepare-lib.js",
+    "publish-lib": "npm run build && npm run prepare-lib && cd lib && npm publish"
+  },
+  "devDependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "react-native-keychain": "^9.2.3"
+  }
+}
