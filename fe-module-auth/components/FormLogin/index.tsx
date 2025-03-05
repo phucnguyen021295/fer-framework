@@ -3,14 +3,13 @@
 import React, { memo, useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input, Typography } from "antd";
-import { usePostLoginMutation } from "@/fe-module-auth/apis";
+import { usePostLoginMutation } from "../../apis";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { createStyles } from "antd-style";
 import Image from "next/image";
 import { useSelector } from "react-redux";
-import { appSelector } from "@/fer-framework/fe-core/reducers/app";
-import { useForm } from "antd/es/form/Form";
+import { appSelector } from "fe-cores/reducers";
 
 const { Title, Text } = Typography;
 

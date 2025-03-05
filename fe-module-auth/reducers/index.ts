@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { authApi } from "../apis";
-import { AUTH_ACTION } from "@/fe-base/actions";
+import { AUTH_ACTION } from "fe-base/actions";
 import { merge } from "lodash";
 
 // Define a type for the slice state
@@ -18,7 +18,7 @@ const initialState: authState = {
   expired: false,
 };
 
-export const extraAuthReducers = (builder) => {
+export const extraAuthReducers = (builder: any) => {
   // Kịch bản logout
   builder.addCase(AUTH_ACTION.LOGOUT, (state: any) => {
     // Khi fetchData đang pending
@@ -42,7 +42,7 @@ export const extraAuthReducers = (builder) => {
 
   builder.addMatcher(
     authApi.endpoints.getMeAuth.matchFulfilled,
-    (state, action: any) => {
+    (state: any, action: any) => {
       state.me = action.payload;
     }
   );

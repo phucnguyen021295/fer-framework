@@ -1,16 +1,17 @@
+// @ts-nocheck
 import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";
 
 // Selectors
 import { useDispatch, useSelector } from "react-redux";
 // import {resetStore} from '../../../../stores/store';
-import { authSelectors } from "@/fe-module-auth/reducers";
+import { authSelectors } from "../../reducers";
 import Button from "@/fe-component/Button";
 import BottomSheet from "@/fe-component/BottomSheet";
 import Text from "@/fe-component/Text";
 import { useNavigation } from "@react-navigation/native";
-import { SCREEN } from "@/fe-module-auth/screens";
-import { AUTH_ACTION } from "@/fe-base/actions";
+import { SCREEN } from "../../screens";
+import { AUTH_ACTION } from "fe-base/actions";
 
 function LoginExpired(props) {
   const navigation = useNavigation();
@@ -27,6 +28,7 @@ function LoginExpired(props) {
       isVisible={expired}
       points={["30%"]}
       mode="un-backdrop"
+      e
       title={"Hết phiên đăng nhập"}
     >
       <View style={styles.container}>

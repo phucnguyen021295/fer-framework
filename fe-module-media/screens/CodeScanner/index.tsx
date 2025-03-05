@@ -1,6 +1,6 @@
-import * as React from 'react';
-import {useCallback, useRef, useState} from 'react';
-import type {AlertButton} from 'react-native';
+import * as React from "react";
+import { useCallback, useRef, useState } from "react";
+import type { AlertButton } from "react-native";
 import {
   Alert,
   Linking,
@@ -8,47 +8,47 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
-} from 'react-native';
-import type {Code} from 'react-native-vision-camera';
-import {useCameraDevice, useCodeScanner} from 'react-native-vision-camera';
-import {Camera} from 'react-native-vision-camera';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import {useIsFocused, useNavigation} from '@react-navigation/core';
-import {StatusBarBlurBackground} from '@/fe-module-media/components/StatusBarBlurBackground';
-import {useIsForeground} from '@/fe-core/hooks/useIsForeground';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import WrapperPermission from '@/fe-module-media/components/WrapperPermission';
-import {BlurView} from '@react-native-community/blur';
-import Text from '@/fe-component/Text';
+} from "react-native";
+import type { Code } from "react-native-vision-camera";
+import { useCameraDevice, useCodeScanner } from "react-native-vision-camera";
+import { Camera } from "react-native-vision-camera";
+import IonIcon from "react-native-vector-icons/Ionicons";
+import { useIsFocused, useNavigation } from "@react-navigation/core";
+import { StatusBarBlurBackground } from "@/fe-module-media/components/StatusBarBlurBackground";
+import { useIsForeground } from "@/fer-framework/fe-cores/hooks/useIsForeground";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import WrapperPermission from "@/fe-module-media/components/WrapperPermission";
+import { BlurView } from "@react-native-community/blur";
+import Text from "@/fe-component/Text";
 
 const showCodeAlert = (value: string, onDismissed: () => void): void => {
   const buttons: AlertButton[] = [
     {
-      text: 'Close',
-      style: 'cancel',
+      text: "Close",
+      style: "cancel",
       onPress: onDismissed,
     },
   ];
-  if (value.startsWith('http')) {
+  if (value.startsWith("http")) {
     buttons.push({
-      text: 'Open URL',
+      text: "Open URL",
       onPress: () => {
         Linking.openURL(value);
         onDismissed();
       },
     });
   }
-  Alert.alert('Scanned Code', value, buttons);
+  Alert.alert("Scanned Code", value, buttons);
 };
 
 function CodeScannerPage(props) {
   const navigation = useNavigation();
-  const {top, left, right} = useSafeAreaInsets();
-  const {route} = props;
-  const {onScanSuccess} = route.params;
-  const {width, height} = useWindowDimensions();
+  const { top, left, right } = useSafeAreaInsets();
+  const { route } = props;
+  const { onScanSuccess } = route.params;
+  const { width, height } = useWindowDimensions();
   // 1. Use a simple default back camera
-  const device = useCameraDevice('back');
+  const device = useCameraDevice("back");
   const [scanned, setScanned] = useState(false);
   const [scanArea, setScanArea] = useState({
     x: 0.1, // 10% from the left of the screen
@@ -70,7 +70,7 @@ function CodeScannerPage(props) {
     (codes: Code[]) => {
       if (!codes.length || scanned) return;
 
-      const {frame, value, corners} = codes[0];
+      const { frame, value, corners } = codes[0];
 
       // // Chuyển đổi scanArea từ phần trăm sang pixel
       // const scanAreaPixel = {
@@ -93,7 +93,7 @@ function CodeScannerPage(props) {
       // );
       // console.log('isBarcodeFullyInsideArea', isBarcodeFullyInsideArea);
       setScanned(true);
-      console.log('Scanned Code:', value);
+      console.log("Scanned Code:", value);
       onScanSuccess(value);
       navigation.goBack();
       return true;
@@ -104,12 +104,12 @@ function CodeScannerPage(props) {
       //   showCodeAlert(value, () => setScanned(false));
       // }
     },
-    [scanArea, width, height, scanned],
+    [scanArea, width, height, scanned]
   );
 
   // 5. Initialize the Code Scanner to scan QR codes and Barcodes
   const codeScanner = useCodeScanner({
-    codeTypes: ['qr'],
+    codeTypes: ["qr"],
     onCodeScanned: onCodeScanned,
     regionOfInterest: {
       x: scanArea.x, // Relative x-coordinate (percentage of width)
@@ -120,7 +120,7 @@ function CodeScannerPage(props) {
   });
 
   return (
-    <WrapperPermission type={'PHOTO'} device={device}>
+    <WrapperPermission type={"PHOTO"} device={device}>
       <View style={styles.container}>
         {device != null && (
           <Camera
@@ -128,18 +128,19 @@ function CodeScannerPage(props) {
             device={device}
             isActive={isActive}
             codeScanner={codeScanner}
-            torch={torch ? 'on' : 'off'}
+            torch={torch ? "on" : "off"}
             enableZoomGesture={true}
           />
         )}
 
         <StatusBarBlurBackground />
 
-        <View style={[styles.des, {top: scanArea.y * height - 48}]}>
+        <View style={[styles.des, { top: scanArea.y * height - 48 }]}>
           <Text
             mode="SemiBold"
             size="Larger"
-            style={{textAlign: 'center', color: '#fff'}}>
+            style={{ textAlign: "center", color: "#fff" }}
+          >
             Di chuyển lại gần mã QR code
           </Text>
         </View>
@@ -149,11 +150,11 @@ function CodeScannerPage(props) {
           <BlurView
             style={[
               styles.darkSection,
-              {top: 0, left: 0, right: 0, height: scanArea.y * height},
+              { top: 0, left: 0, right: 0, height: scanArea.y * height },
             ]}
             blurAmount={25}
             blurType="light"
-            reducedTransparencyFallbackColor={'rgba(140, 140, 140, 0.3)'}
+            reducedTransparencyFallbackColor={"rgba(140, 140, 140, 0.3)"}
           />
 
           {/* Left Dark Section */}
@@ -169,7 +170,7 @@ function CodeScannerPage(props) {
             ]}
             blurAmount={25}
             blurType="light"
-            reducedTransparencyFallbackColor={'rgba(140, 140, 140, 0.3)'}
+            reducedTransparencyFallbackColor={"rgba(140, 140, 140, 0.3)"}
           />
 
           {/* Right Dark Section */}
@@ -185,7 +186,7 @@ function CodeScannerPage(props) {
             ]}
             blurAmount={25}
             blurType="light"
-            reducedTransparencyFallbackColor={'rgba(140, 140, 140, 0.3)'}
+            reducedTransparencyFallbackColor={"rgba(140, 140, 140, 0.3)"}
           />
 
           {/* Bottom Dark Section */}
@@ -201,7 +202,7 @@ function CodeScannerPage(props) {
             ]}
             blurAmount={25}
             blurType="light"
-            reducedTransparencyFallbackColor={'rgba(140, 140, 140, 0.3)'}
+            reducedTransparencyFallbackColor={"rgba(140, 140, 140, 0.3)"}
           />
 
           {/* Scanable Area */}
@@ -219,19 +220,23 @@ function CodeScannerPage(props) {
         </View>
 
         <View
-          style={[styles.rightButtonRow, {top: top + 12, right: right || 12}]}>
+          style={[styles.rightButtonRow, { top: top + 12, right: right || 12 }]}
+        >
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setTorch(!torch)}>
+            onPress={() => setTorch(!torch)}
+          >
             <IonIcon
-              name={torch ? 'flash' : 'flash-off'}
+              name={torch ? "flash" : "flash-off"}
               color="white"
               size={24}
             />
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.leftButtonRow, {top: top + 12, left: left || 12}]}>
+        <View
+          style={[styles.leftButtonRow, { top: top + 12, left: left || 12 }]}
+        >
           <TouchableOpacity style={styles.button} onPress={navigation.goBack}>
             <IonIcon name="close" color="white" size={24} />
           </TouchableOpacity>
@@ -246,11 +251,11 @@ export default CodeScannerPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: "black",
   },
 
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
@@ -258,16 +263,16 @@ const styles = StyleSheet.create({
     zIndex: 0, // Dark overlay at the bottom
   },
 
-  des: {position: 'absolute', left: 0, right: 0, zIndex: 10},
+  des: { position: "absolute", left: 0, right: 0, zIndex: 10 },
   darkSection: {
-    position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent black for dark effect
+    position: "absolute",
+    backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent black for dark effect
   },
   scanArea: {
-    position: 'absolute',
+    position: "absolute",
     borderWidth: 2,
-    borderColor: 'green', // Highlight the scan area with green border
-    backgroundColor: 'transparent', // Make scan area clear (no fill)
+    borderColor: "green", // Highlight the scan area with green border
+    backgroundColor: "transparent", // Make scan area clear (no fill)
     zIndex: 1, // Scan area on top of the dark overlay
   },
 
@@ -276,22 +281,22 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 40 / 2,
-    backgroundColor: 'rgba(140, 140, 140, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(140, 140, 140, 0.3)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   rightButtonRow: {
-    position: 'absolute',
+    position: "absolute",
     right: 12,
     top: 44,
   },
   backButton: {
-    position: 'absolute',
+    position: "absolute",
     left: 12,
     top: 44,
   },
   leftButtonRow: {
-    position: 'absolute',
+    position: "absolute",
     left: 20,
     top: 44,
   },

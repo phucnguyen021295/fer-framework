@@ -1,6 +1,7 @@
-import { baseApi, postBaseApi, getBaseApi } from "@/fe-base/apis";
+// @ts-nocheck
+import { baseApi, postBaseApi, getBaseApi } from "fe-base/apis";
 
-export const authApi = baseApi.injectEndpoints({
+export const authApi: any = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     postLogin: postBaseApi<
       { username: string; password: number },

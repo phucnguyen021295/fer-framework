@@ -3,7 +3,7 @@ import React, { memo } from "react";
 import { Modal } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { authSelectors } from "../../reducers";
-import { AUTH_ACTION } from "@/fer-framework/fe-base/actions";
+import { AUTH_ACTION } from "fe-base/actions";
 import { useRouter } from "next/navigation";
 import { deleteCookie } from "cookies-next";
 

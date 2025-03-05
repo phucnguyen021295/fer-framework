@@ -1,0 +1,59 @@
+{
+  "name": "fe-module-auth",
+  "version": "1.0.7",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./apis": {
+      "require": "./apis/index.js",
+      "import": "./apis/index.js",
+      "types": "./apis/index.d.ts"
+    },
+    "./components": {
+      "require": "./components/index.js",
+      "import": "./components/index.js",
+      "types": "./components/index.d.ts"
+    },
+    "./pages": {
+      "require": "./pages/index.js",
+      "import": "./pages/index.js",
+      "types": "./pages/index.d.ts"
+    },
+    "./reducers": {
+      "require": "./reducers/index.js",
+      "import": "./reducers/index.js",
+      "types": "./reducers/index.d.ts"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf lib",
+    "build": "npm run clean && tsc",
+    "prepare-lib": "node prepare-lib.js",
+    "publish-lib": "npm run build && npm run prepare-lib && cd lib && npm publish"
+  },
+  "devDependencies": {
+    "@reduxjs/toolkit": "^2.6.0",
+    "@types/lodash": "^4.17.15",
+    "@types/node": "^22.13.7",
+    "@types/node-fetch": "^2.6.12",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@types/redux-logger": "^3.0.13",
+    "antd": "^5.24.2",
+    "cookies-next": "^5.1.0",
+    "fe-base": "^1.2.8",
+    "fe-cores": "^1.0.0",
+    "fe-global": "^1.0.3",
+    "lodash": "^4.17.21",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-redux": "^9.2.0",
+    "redux-logger": "^3.0.6",
+    "typescript": "^5.8.2"
+  }
+}

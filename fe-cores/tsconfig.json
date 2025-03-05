@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "jsx": "react",
+    "declaration": true,
+    "outDir": "./lib",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "composite": true,
+    "declarationMap": true,
+    "noImplicitAny": false,
+    "noUnusedParameters": false,
+    "noEmitOnError": false
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "lib", "**/*.test.ts"]
+}
