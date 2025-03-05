@@ -1,2 +1,2 @@
-export * as mobile from "./mobile";
-export * as table from "./table";
+export * from "./mobile";
+export * from "./table";

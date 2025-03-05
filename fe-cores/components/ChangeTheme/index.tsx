@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Tooltip } from "antd";
 import { SunFilled, MoonFilled } from "@ant-design/icons";
-import { useTheme } from "fe-global/themes/ThemeProvider";
+import { useTheme } from "fe-global/themes";
 
 const ChangeTheme: React.FC = () => {
   const { mode, toggleTheme } = useTheme();

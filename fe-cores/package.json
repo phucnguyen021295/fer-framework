@@ -1,6 +1,6 @@
 {
   "name": "fe-cores",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {
@@ -14,15 +14,20 @@
       "import": "./common/index.js",
       "types": "./common/index.d.ts"
     },
-    "./hooks": {
-      "require": "./hooks/index.js",
-      "import": "./hooks/index.js",
-      "types": "./hooks/index.d.ts"
-    },
     "./components": {
       "require": "./components/index.js",
       "import": "./components/index.js",
       "types": "./components/index.d.ts"
+    },
+    "./constants": {
+      "require": "./constants/index.js",
+      "import": "./constants/index.js",
+      "types": "./constants/index.d.ts"
+    },
+    "./hooks": {
+      "require": "./hooks/index.js",
+      "import": "./hooks/index.js",
+      "types": "./hooks/index.d.ts"
     },
     "./reducers": {
       "require": "./reducers/index.js",

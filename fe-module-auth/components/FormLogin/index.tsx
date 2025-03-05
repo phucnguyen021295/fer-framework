@@ -9,7 +9,7 @@ import { setCookie } from "cookies-next";
 import { createStyles } from "antd-style";
 import Image from "next/image";
 import { useSelector } from "react-redux";
-import { appSelector } from "fe-cores/reducers/app";
+import { appSelector } from "fe-cores/reducers";
 
 const { Title, Text } = Typography;
 

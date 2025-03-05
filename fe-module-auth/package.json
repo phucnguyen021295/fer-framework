@@ -1,6 +1,6 @@
 {
   "name": "fe-module-auth",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "main": "index.js",
   "types": "index.d.ts",
   "exports": {
@@ -15,14 +15,14 @@
       "types": "./apis/index.d.ts"
     },
     "./components": {
-      "require": "./components",
-      "import": "./components",
-      "types": "./components"
+      "require": "./components/index.js",
+      "import": "./components/index.js",
+      "types": "./components/index.d.ts"
     },
     "./pages": {
-      "require": "./pages",
-      "import": "./pages",
-      "types": "./pages"
+      "require": "./pages/index.js",
+      "import": "./pages/index.js",
+      "types": "./pages/index.d.ts"
     },
     "./reducers": {
       "require": "./reducers/index.js",

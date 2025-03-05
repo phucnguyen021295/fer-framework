@@ -174,5 +174,4 @@ export const appAction = appSlice.actions;
 
 export const appSelector = appSlice.selectors;
 
-// Other code such as selectors can use the imported `RootState` type
-export default appSlice.reducer;
+export const appReducer = appSlice.reducer;

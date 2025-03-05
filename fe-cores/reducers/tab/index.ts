@@ -106,7 +106,7 @@ export const tabActions = tabSlice.actions;
 
 export const tabSelectors = tabSlice.selectors;
 
-export default tabSlice.reducer;
+export const tabReducer = tabSlice.reducer;
 
 const getMenuItemsByPaths = (
   tabs: Route[],

@@ -52,7 +52,7 @@ const Account: React.FC = () => {
     <Dropdown menu={{ items, onClick }} placement="bottomRight">
       <Flex align="center" gap={8} style={{ height: "100%" }}>
         <Image
-          src={require("./images/avatar.jpg")}
+          src={require("@/public/avatar.jpg")}
           width={32}
           height={32}
           alt="avatar"

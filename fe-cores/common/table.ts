@@ -3,7 +3,7 @@ import { useMemo, useState, useEffect } from "react";
 import { TablePaginationConfig } from "antd/es/table";
 import { FilterValue, SorterResult } from "antd/es/table/interface";
 import { useHeightContent } from "../hooks/useHeightContent";
-import useResponsivePadding from "../hooks/useResponsivePadding";
+import { useResponsivePadding } from "../hooks/useResponsivePadding";
 import { useMobile } from "./mobile";
 
 type SIZE = { small: number; middle: number; large: number };

@@ -33,7 +33,7 @@ import {
   PAGE_TAB_HEIGHT,
   ThemeLayoutMode,
 } from "../../constants";
-import { useTheme } from "fe-global/themes/ThemeProvider";
+import { useTheme } from "fe-global/themes";
 import GlobalTab from "../GlobalTab";
 
 const { Header, Sider, Content, Footer } = Layout;
