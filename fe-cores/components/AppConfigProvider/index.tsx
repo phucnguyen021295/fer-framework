@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Flex, Spin, Layout } from "antd";
 import { useDispatch } from "react-redux";
+import Image from "next/image";
 
 import { APP_STATE, appAction } from "../../reducers/app";
 
@@ -34,6 +35,12 @@ const AppConfigProvider: React.FC<Props> = (props: Props) => {
           justify="center"
           style={{ height: "100vh" }}
         >
+          <Image
+            src={require("@/public/logo.png")}
+            alt="Vercel Logo"
+            width={150}
+            priority
+          />
           <Spin />
         </Flex>
       </Layout>
