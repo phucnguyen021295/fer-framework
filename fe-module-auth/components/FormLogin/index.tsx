@@ -35,7 +35,8 @@ const FormLogin: React.FC<Props> = (props: Props) => {
   const onFinish = async (values: any) => {
     try {
       const data = await postLogin({
-        body: { username: values.username, password: values.password },
+        username: values.username,
+        password: values.password,
       }).unwrap();
       // const redirect = searchParams.get("redirect");
       setCookie("token", data.token);
