@@ -34,13 +34,11 @@ interface FilterItem {
 }
 
 function transformData(filters, data) {
-  return filters
-    .map((filter) => ({
-      name: filter.name,
-      operation: filter.operation,
-      value: data[filter.name],
-    }))
-    .filter((item) => item.value !== undefined); // Bỏ qua các item có value là undefined
+  return filters.map((filter) => ({
+    name: filter.name,
+    operation: filter.operation,
+    value: data[filter.name] === undefined ? "" : data[filter.name],
+  }));
 }
 
 interface DynamicFilterProps {
@@ -60,7 +58,7 @@ const TableHeaderOperation: React.FC<DynamicFilterProps> = (props) => {
 
   const { data = {}, onApply, title = "Bộ lọc", add } = props;
 
-  const handleOpenChange = (newOpen) => {
+  const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
   };
 
@@ -108,8 +106,13 @@ const TableHeaderOperation: React.FC<DynamicFilterProps> = (props) => {
 
         <Form.Item style={{ marginBottom: 0 }}>
           <Flex flex={1} gap={12}>
-            <Button onClick={handleReset} style={{ flex: 1 }}>
-              Hủy lọc
+            <Button
+              onClick={handleReset}
+              type="primary"
+              ghost
+              style={{ flex: 1 }}
+            >
+              Reset
             </Button>
             <Button type="primary" style={{ flex: 1 }} onClick={handleApply}>
               Áp dụng
@@ -118,7 +121,7 @@ const TableHeaderOperation: React.FC<DynamicFilterProps> = (props) => {
         </Form.Item>
       </Form>
     );
-  }, [data, form]);
+  }, [data, form, handleApply]);
 
   const isFilterPin = useMemo(() => {
     if (!size) return false;
@@ -156,7 +159,7 @@ const TableHeaderOperation: React.FC<DynamicFilterProps> = (props) => {
             allowClear
             suffix={
               isMobile ? (
-                <Tooltip title="Extra information">
+                <Tooltip title="Lọc">
                   <FilterOutlined
                     style={{ color: theme.colorPrimary }}
                     onClick={() => setOpen(true)}
@@ -170,7 +173,7 @@ const TableHeaderOperation: React.FC<DynamicFilterProps> = (props) => {
       <Flex gap={12}>
         {isFilterPin
           ? data.filters
-              .filter((item) => item?.pin === true)
+              .filter((item: FilterItem) => item?.pin === true)
               .map((filter: FilterItem, index: number) => (
                 <Form.Item
                   key={index}
@@ -182,7 +185,6 @@ const TableHeaderOperation: React.FC<DynamicFilterProps> = (props) => {
                     style={{ minWidth: 180 }}
                     onChange={(value) => {
                       // Xử lý sự thay đổi giá trị tại đây
-                      console.log(`Filter ${filter.name} changed to:`, value);
                       onApply({
                         filters: [
                           {

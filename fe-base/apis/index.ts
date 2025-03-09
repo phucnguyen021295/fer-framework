@@ -107,23 +107,17 @@ export const getBaseApi = <TParams extends Record<string, any>>(
     ...((partial ?? {}) as any),
   });
 
-interface MutationParams<TBody, TParams = Record<string, any>> {
-  body: TBody;
-  params?: TParams;
-}
-
 // Hàm `postBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
-export const postBaseApi = <TBody, TParams = Record<string, any>>(
+export const postBaseApi = <TBody>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.mutation>>
 ) =>
-  builder.mutation<TBody, MutationParams<TBody, TParams>>({
-    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
+  builder.mutation<any, TBody>({
+    query: (body: TBody) => ({
       url,
       method: "POST",
       body,
-      params,
     }),
     transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
@@ -132,34 +126,32 @@ export const postBaseApi = <TBody, TParams = Record<string, any>>(
   });
 
 // Hàm `putBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
-export const putBaseApi = <TBody, TParams = Record<string, any>>(
+export const putBaseApi = <TBody>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
-  builder.mutation<any, MutationParams<TBody, TParams>>({
-    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
+  builder.mutation<any, TBody>({
+    query: (body: TBody) => ({
       url,
       method: "PUT",
       body,
-      params,
     }),
     transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
   });
 
 // Hàm `patchBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
-export const patchBaseApi = <TBody, TParams = Record<string, any>>(
+export const patchBaseApi = <TBody>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
-  builder.mutation<any, MutationParams<TBody, TParams>>({
-    query: ({ body, params }: MutationParams<TBody, TParams>) => ({
+  builder.mutation<any, TBody>({
+    query: (body: TBody) => ({
       url,
       method: "PATCH",
       body,
-      params,
     }),
     transformResponse: (response: { data: any }, meta, arg) => response.data,
     ...((partial ?? {}) as any),
@@ -170,13 +162,13 @@ interface DeleteParams {
 }
 
 // Hàm `patchBaseApi` nhận vào `builder` và định nghĩa một endpoint `mutation`
-export const deleteBaseApi = (
+export const deleteBaseApi = <DeleteParams>(
   url: string,
   builder: EndpointBuilder<BaseQueryFn, any, any>,
   partial?: Partial<ReturnType<typeof builder.query>>
 ) =>
   builder.mutation<any, DeleteParams>({
-    query: ({ params }: DeleteParams) => ({
+    query: (params: DeleteParams) => ({
       url,
       method: "DELETE",
       params,

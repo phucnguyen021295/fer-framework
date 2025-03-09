@@ -1,10 +1,23 @@
 "use client";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { TablePaginationConfig } from "antd/es/table";
 import { FilterValue, SorterResult } from "antd/es/table/interface";
 import { useHeightContent } from "../hooks/useHeightContent";
 import { useResponsivePadding } from "../hooks/useResponsivePadding";
 import { useMobile } from "./mobile";
+import {
+  cloneDeep,
+  findIndex,
+  has,
+  includes,
+  isArray,
+  isEmpty,
+  isObject,
+  isString,
+  merge,
+  remove,
+  some,
+} from "lodash";
 
 type SIZE = { small: number; middle: number; large: number };
 
@@ -33,7 +46,7 @@ interface TableScrollProps {
   deductionHeight?: number;
   isPagination?: boolean;
   isFooter?: boolean;
-  isTableHeaderOperaiton?: boolean;
+  isHeaderOperaiton?: boolean;
 }
 
 /**
@@ -60,7 +73,7 @@ export function useTableScroll(props: TableScrollProps) {
     deductionHeight = 0,
     isFooter = false,
     isPagination = true,
-    isTableHeaderOperaiton = false,
+    isHeaderOperaiton = false,
   } = props;
   const tableHeight = useHeightContent();
   const padding = useResponsivePadding();
@@ -87,7 +100,7 @@ export function useTableScroll(props: TableScrollProps) {
       FOOTER_TABLE = FOOTER_TABLE_SIZE[size];
     }
 
-    if (isTableHeaderOperaiton) {
+    if (isHeaderOperaiton) {
       _TABLE_HEADER_OPERAITION_HEIGHT = TABLE_HEADER_OPERAITION_HEIGHT;
     }
 
@@ -122,223 +135,6 @@ export function useTableScroll(props: TableScrollProps) {
   return { scrollConfig };
 }
 
-/** ------------------------------------------------------------------------------ */
-
-/**
- * Interface cho các tùy chọn của useTablePagination
- * @template RecordType - Kiểu dữ liệu của record trong bảng
- */
-interface UseTablePaginationOptions<RecordType> {
-  /** Tổng số items trong bảng */
-  total?: number;
-  /** Kích thước mặc định của trang */
-  defaultPageSize?: number;
-  /** Trang hiện tại mặc định */
-  defaultCurrent?: number;
-  /** Các tùy chọn pageSize hiển thị trong dropdown */
-  pageSizeOptions?: string[];
-  /** Callback khi thay đổi pagination, filters hoặc sorter */
-  onChange?: (
-    page: number,
-    pageSize: number,
-    filters: Record<string, FilterValue | null>,
-    sorter: SorterResult<RecordType> | SorterResult<RecordType>[]
-  ) => void;
-}
-
-/**
- * Interface cho kết quả trả về từ getSliceIndices
- */
-interface SliceIndices {
-  /** Chỉ số bắt đầu cho việc slice dữ liệu */
-  startIndex: number;
-  /** Chỉ số kết thúc cho việc slice dữ liệu */
-  endIndex: number;
-}
-
-/**
- * Interface cho kết quả trả về từ useTablePagination
- * @template RecordType - Kiểu dữ liệu của record trong bảng
- */
-interface UseTablePaginationResult<RecordType> {
-  /** Cấu hình pagination để truyền vào component Table */
-  pagination: TablePaginationConfig;
-
-  /**
-   * Hàm xử lý sự kiện onChange của Table
-   * @param newPagination - Cấu hình pagination mới
-   * @param filters - Các filter hiện tại
-   * @param sorter - Thông tin sắp xếp hiện tại
-   */
-  handleTableChange: (
-    newPagination: TablePaginationConfig,
-    filters: Record<string, FilterValue | null>,
-    sorter: SorterResult<RecordType> | SorterResult<RecordType>[]
-  ) => void;
-
-  /**
-   * Đặt lại về trang đầu tiên
-   */
-  resetToFirstPage: () => void;
-
-  /**
-   * Đặt trang hiện tại
-   * @param page - Số trang muốn thiết lập
-   */
-  setCurrentPage: (page: number) => void;
-
-  /**
-   * Đặt kích thước trang
-   * @param size - Kích thước trang muốn thiết lập
-   */
-  setPageSize: (size: number) => void;
-
-  /**
-   * Lấy chỉ số bắt đầu và kết thúc cho việc slice dữ liệu ở client-side
-   * @returns Đối tượng chứa startIndex và endIndex
-   */
-  getSliceIndices: () => SliceIndices;
-}
-
-/**
- * Custom hook để quản lý pagination cho Table của Ant Design
- *
- * @template RecordType - Kiểu dữ liệu của record trong bảng
- * @param options - Các tùy chọn cấu hình
- * @param options.total - Tổng số items trong bảng
- * @param options.defaultPageSize - Kích thước mặc định của trang (mặc định: 10)
- * @param options.defaultCurrent - Trang hiện tại mặc định (mặc định: 1)
- * @param options.pageSizeOptions - Các tùy chọn pageSize hiển thị trong dropdown (mặc định: ['10', '20', '50', '100'])
- * @param options.onChange - Callback khi thay đổi pagination, filters hoặc sorter
- *
- * @returns Đối tượng chứa pagination config và các helper methods
- *
- * @example
- * // Sử dụng với server-side pagination
- * const { pagination, handleTableChange } = useTablePagination<Product>({
- *   total: totalItems,
- *   onChange: (page, pageSize) => {
- *     fetchData(page, pageSize);
- *   }
- * });
- *
- * // Sử dụng với client-side pagination
- * const { pagination, handleTableChange, getSliceIndices } = useTablePagination<Product>({
- *   total: data.length
- * });
- * const { startIndex, endIndex } = getSliceIndices();
- * const currentPageData = data.slice(startIndex, endIndex);
- */
-function useTablePagination<RecordType>(
-  options: UseTablePaginationOptions<RecordType> = {}
-): UseTablePaginationResult<RecordType> {
-  const {
-    total = 0,
-    defaultPageSize = 10,
-    defaultCurrent = 1,
-    pageSizeOptions = ["10", "20", "50", "100"],
-    onChange,
-  } = options;
-
-  // Cấu hình pagination state
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: defaultCurrent,
-    pageSize: defaultPageSize,
-    total,
-    pageSizeOptions,
-    showSizeChanger: true,
-    showTotal: (total: number, range: [number, number]) =>
-      `${range[0]}-${range[1]} của ${total} mục`,
-    // Thêm các thuộc tính pagination khác nếu cần
-  });
-
-  // Cập nhật total khi dữ liệu thay đổi
-  useEffect(() => {
-    setPagination((prev) => ({
-      ...prev,
-      total,
-    }));
-  }, [total]);
-
-  /**
-   * Xử lý khi thay đổi trang, pageSize, filters hoặc sorter
-   */
-  const handleTableChange = (
-    newPagination: TablePaginationConfig,
-    filters: Record<string, FilterValue | null>,
-    sorter: SorterResult<RecordType> | SorterResult<RecordType>[]
-  ): void => {
-    const { current, pageSize } = newPagination;
-
-    setPagination((prev) => ({
-      ...prev,
-      current,
-      pageSize,
-    }));
-
-    // Gọi callback
-    if (onChange && current && pageSize) {
-      onChange(current, pageSize, filters, sorter);
-    }
-  };
-
-  /**
-   * Đặt lại về trang đầu tiên
-   */
-  const resetToFirstPage = (): void => {
-    setPagination((prev) => ({
-      ...prev,
-      current: 1,
-    }));
-  };
-
-  /**
-   * Đặt trang hiện tại
-   */
-  const setCurrentPage = (page: number): void => {
-    setPagination((prev) => ({
-      ...prev,
-      current: page,
-    }));
-  };
-
-  /**
-   * Đặt kích thước trang và reset về trang đầu
-   */
-  const setPageSize = (size: number): void => {
-    setPagination((prev) => ({
-      ...prev,
-      pageSize: size,
-      current: 1, // Reset về trang đầu khi thay đổi pageSize
-    }));
-  };
-
-  /**
-   * Tính toán các chỉ số cho việc slice data ở client-side
-   */
-  const getSliceIndices = (): SliceIndices => {
-    const current = pagination.current || defaultCurrent;
-    const pageSize = pagination.pageSize || defaultPageSize;
-
-    const startIndex = (current - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-
-    return { startIndex, endIndex };
-  };
-
-  // Trả về pagination config và các helper methods
-  return {
-    pagination,
-    handleTableChange,
-    resetToFirstPage,
-    setCurrentPage,
-    setPageSize,
-    getSliceIndices,
-  };
-}
-
-export default useTablePagination;
-
 /** ------------------------------------------------------------------ */
 
 interface SearchRequest {
@@ -351,97 +147,283 @@ interface SearchResponse {
   total: number;
 }
 
-type UseSearchMutationHook = () => [
-  (arg: SearchRequest) => Promise<
-    | {
-        data: SearchResponse;
-      }
-    | {
-        error: unknown;
-      }
-  >,
-  {
-    data?: SearchResponse;
-    error?: unknown;
-    isLoading: boolean;
-    isSuccess: boolean;
-    isError: boolean;
-    reset: () => void;
-  }
-];
-
-interface ConfigProps {
-  useSearchMutation: UseSearchMutationHook;
-  apiBody: {
-    keyword?: string;
-    fieldsSearch?: string[];
-    page: number;
-    pageSize: number;
-    filters?: {
-      name: string;
-      operation: "eq";
-      value: number | string | string[] | number[];
-    }[];
-    sorts?: {
-      property: string;
-      direction: string;
-    }[];
-  };
-  updateSearchBody: (body: any) => void;
+interface SearchBody {
+  page: number;
+  pageSize: number;
+  keyword: string;
+  fieldsSearch?: string[];
+  filters: {
+    name: string;
+    operation: "eq" | "in" | "gt" | "lt" | "between";
+    value: number | string | string[] | number[];
+  }[];
+  sorts?: {
+    property: string;
+    direction: string;
+  }[];
 }
 
-export function useTable(
+interface ConfigProps {
+  useSearchMutation: any;
+  bodyApi: SearchBody;
+  updateSearchBody: (body: any) => void;
+  columns: any[];
+}
+
+export function useHookTable(
   config: ConfigProps,
   paginationConfig?: Omit<
     TablePaginationConfig,
     "total" | "current" | "pageSize" | "onChange"
   >
 ) {
-  const { useSearchMutation, apiBody, updateSearchBody } = config;
   const isMobile = useMobile();
+  const { useSearchMutation, bodyApi, updateSearchBody, columns } = config;
   const [searchTable, { data, isLoading, isSuccess, isError, reset }] =
     useSearchMutation();
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false);
 
-  const searchTableApi = async (apiBody: unknown) => {
-    try {
-      const body: any = { body: apiBody };
-      const result = await searchTable(body);
-      console.log("searchTableApi", result);
-    } catch (error) {
-      console.log("searchTableApi", error);
-    }
-  };
+  // Memoize bodyApi để tránh re-render không cần thiết
+  const currentBodyApi = useMemo(
+    () => bodyApi,
+    [
+      bodyApi.page,
+      bodyApi.pageSize,
+      // Serialize các filter khác để so sánh
+      JSON.stringify(
+        Object.fromEntries(
+          Object.entries(bodyApi).filter(
+            ([key]) => !["page", "pageSize"].includes(key)
+          )
+        )
+      ),
+    ]
+  );
 
+  // Gọi API search table
+  const searchTableApi = useCallback(
+    async (body: SearchBody) => {
+      try {
+        const result = await searchTable(body);
+        return result;
+      } catch (error) {
+        console.error("Error in searchTableApi:", error);
+        return null;
+      }
+    },
+    [searchTable]
+  );
+
+  // Gọi API khi bodyApi thay đổi
   useEffect(() => {
-    searchTableApi(apiBody).then();
-  }, [apiBody, searchTableApi]);
+    const fetchData = async () => {
+      await searchTableApi(currentBodyApi);
+      if (!isInitialFetchDone) {
+        setIsInitialFetchDone(true);
+      }
+    };
 
+    fetchData();
+  }, [currentBodyApi, searchTableApi]);
+
+  // Tính toán total từ dữ liệu
   const total = useMemo(() => data?.total || 0, [data]);
 
-  const pagination: TablePaginationConfig = {
-    total,
-    simple: isMobile,
-    pageSizeOptions: ["10", "15", "20", "25", "30"],
-    showSizeChanger: true,
-    current: apiBody.page,
-    pageSize: apiBody.pageSize,
-    onChange: (page: number, pageSize: number) => {
-      updateSearchBody({
-        page,
-        pageSize,
-      });
-    },
-    ...paginationConfig,
-  };
+  // Cấu hình pagination
+  const pagination: TablePaginationConfig = useMemo(
+    () => ({
+      total,
+      simple: isMobile,
+      pageSizeOptions: ["10", "15", "20", "25", "30"],
+      showSizeChanger: true,
+      current: bodyApi.page,
+      pageSize: bodyApi.pageSize,
+      onChange: (page: number, pageSize: number) => {
+        updateSearchBody({
+          page,
+          pageSize,
+        });
+      },
+      showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} mục`,
+      ...paginationConfig,
+    }),
+    [
+      total,
+      isMobile,
+      bodyApi.page,
+      bodyApi.pageSize,
+      updateSearchBody,
+      paginationConfig,
+    ]
+  );
+
+  // Force refresh bảng
+  const refreshTable = useCallback(async () => {
+    return searchTableApi(currentBodyApi);
+  }, [currentBodyApi, searchTableApi]);
+
+  // Reset về trang đầu tiên
+  const resetToFirstPage = useCallback(() => {
+    updateSearchBody({
+      page: 1,
+    });
+  }, [updateSearchBody]);
 
   return {
     tableProps: {
       loading: isLoading,
       pagination,
+      dataSource: data?.items || [],
     },
     data,
-    isSuccess: isSuccess,
-    isError: isError,
+    columns,
+    isInitialFetchDone,
+    isSuccess,
+    isError,
     updateSearchBody,
+    refreshTable,
+    resetToFirstPage,
+    reset,
   };
 }
+
+/** ==================================================== */
+
+const defaultFilter: SearchBody = {
+  keyword: "",
+  pageSize: 10,
+  page: 1,
+  filters: [],
+};
+
+type UpdateFilterParam = string | Partial<SearchBody> | "reset";
+
+export const useHookFilter = (initialFilter?: Partial<SearchBody>) => {
+  const [filters, setFilters] = useState<SearchBody>(
+    merge({}, defaultFilter, initialFilter)
+  );
+
+  const isEmptyValue = (value: any): boolean =>
+    isEmpty(value) || value === null || value === undefined;
+
+  const updateFilter = useCallback(
+    (keyOrObj: UpdateFilterParam, value?: any) => {
+      // Case: Reset filters
+      if (keyOrObj === "reset") {
+        setFilters(defaultFilter);
+        return;
+      }
+
+      setFilters((prev) => {
+        // Case: Update via object
+        if (isObject(keyOrObj) && !isString(keyOrObj)) {
+          const newState = cloneDeep(prev);
+          const updatedFields = keyOrObj as Partial<SearchBody>;
+
+          // Determine if we need to reset page
+          let shouldResetPage = some(["keyword", "pageSize"], (key) =>
+            has(updatedFields, key)
+          );
+
+          // Xử lý đặc biệt cho mảng filters
+          if ("filters" in updatedFields && updatedFields.filters) {
+            // Tạo một mảng mới cho filters
+            let newFilters = cloneDeep(prev.filters);
+
+            // Xử lý từng filter trong updatedFields.filters
+            updatedFields.filters.forEach((newFilter) => {
+              const existingIndex = findIndex(newFilters, {
+                name: newFilter.name,
+              });
+
+              if (existingIndex === -1) {
+                // Filter chưa tồn tại
+                if (!isEmptyValue(newFilter.value)) {
+                  // Thêm mới nếu có giá trị
+                  newFilters.push(newFilter);
+                }
+              } else {
+                // Filter đã tồn tại
+                if (isEmptyValue(newFilter.value)) {
+                  // Xóa filter nếu giá trị rỗng
+                  newFilters = newFilters.filter((_, i) => i !== existingIndex);
+                } else {
+                  // Cập nhật giá trị
+                  newFilters[existingIndex].value = newFilter.value;
+                }
+              }
+            });
+
+            newState.filters = newFilters;
+            shouldResetPage = true;
+          }
+
+          // Cập nhật các trường cơ bản khác
+          if ("keyword" in updatedFields)
+            newState.keyword = updatedFields.keyword || "";
+          if ("pageSize" in updatedFields)
+            newState.pageSize = updatedFields.pageSize || 10;
+          if ("page" in updatedFields) newState.page = updatedFields.page || 1;
+
+          // Reset page if needed
+          if (shouldResetPage && !("page" in updatedFields)) {
+            newState.page = 1;
+          }
+
+          return newState;
+        }
+
+        // Case: Update base property
+        if (includes(["keyword", "pageSize", "page"], keyOrObj)) {
+          const resetPage = includes(["keyword", "pageSize"], keyOrObj);
+          return {
+            ...prev,
+            [keyOrObj]: value,
+            page: resetPage ? 1 : prev.page,
+          };
+        }
+
+        // Case: Update filter
+        const newFilters = cloneDeep(prev.filters);
+        const filterIndex = findIndex(newFilters, { name: keyOrObj });
+
+        if (filterIndex === -1) {
+          // Filter không tồn tại, thêm mới nếu giá trị không rỗng
+          if (!isEmptyValue(value)) {
+            newFilters.push({
+              name: keyOrObj as string,
+              operation: isArray(value) ? "in" : "eq",
+              value,
+            });
+          }
+        } else {
+          // Filter đã tồn tại
+          if (isEmptyValue(value)) {
+            // Xóa filter nếu giá trị rỗng
+            remove(newFilters, (_, i) => i === filterIndex);
+          } else {
+            // Cập nhật giá trị
+            newFilters[filterIndex].value = value;
+          }
+        }
+
+        return {
+          ...prev,
+          filters: newFilters,
+          page: 1, // Reset page when updating filters
+        };
+      });
+    },
+    []
+  );
+
+  // // Hàm này trả về filters đã loại bỏ các giá trị rỗng
+  // const getCleanFilters = useCallback(() => {
+  //   return {
+  //     ...filters,
+  //     filters: filters.filters.filter((filter) => !isEmptyValue(filter.value)),
+  //   };
+  // }, [filters]);
+
+  return { filters, updateFilter };
+};
